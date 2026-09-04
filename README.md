@@ -3,16 +3,22 @@
 **FILES DESCRIPTION**
 - main.py : no use
 - my_agent : web_search_agent (haven't change name only)
-- manager_agent : self-explanatory 
+- manager_agent : self-explanatory
+- intention_identifier_agent : identify intention of student to help manager_agent to decide next action
+
+**FINISHED**
+```
+intention_identifier_agent
+```
 
 **CURRENTLY_WORKING_ON:**
 ```
-Manager agent 
+Consulting agent
 ```
 
 **FOLLOW_UP:**
 ```
-Consulting agent
+Manager agent 
 ```
 
 # REQUIRED DATA
