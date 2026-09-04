@@ -16,6 +16,7 @@ class Intention(Enum):
     UNCERTAIN_SPECIFIC = 2
     CERTAIN=3
 
+
 class IntentionContent(BaseModel):
     intention:Intention = Field(description="Enum value recording intention state of students")
     specific_career:Optional[str] = Field(description="String recording specific AI career path given by students that are certain to pursue in AI in the future")
