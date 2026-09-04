@@ -35,4 +35,4 @@ Roadmap:
 >If specify all the specific AI career path to work on, come up with their respective roadmap
 
 >[!NOTE]
->If can, please compile the info found into text-form
+>If can, please compile the info found into text-form in Data_Collection file in github or GoogleDoc
