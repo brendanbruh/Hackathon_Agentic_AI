@@ -1,5 +1,10 @@
 # CHECKLOG
 
+**FILES DESCRIPTION**
+- main.py : no use
+- my_agent : web_search_agent (haven't change name only)
+- manager_agent : self-explanatory 
+
 **CURRENTLY_WORKING_ON:**
 ```
 Manager agent 
