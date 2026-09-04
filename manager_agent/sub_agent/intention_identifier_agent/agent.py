@@ -2,11 +2,12 @@ import os
 
 from enum import Enum
 from pydantic import BaseModel,Field
-from typing import Optional
+from typing import Optional,Any
 
 from dotenv import load_dotenv
 from google.adk.agents.llm_agent import Agent
 from google.adk.models.lite_llm import LiteLlm
+from google.adk.tools import ToolContext,FunctionTool
 
 
 load_dotenv(".env")
@@ -16,12 +17,26 @@ class Intention(Enum):
     UNCERTAIN_SPECIFIC = 2
     CERTAIN=3
 
-
 class IntentionContent(BaseModel):
     intention:Intention = Field(description="Enum value recording intention state of students")
     specific_career:Optional[str] = Field(description="String recording specific AI career path given by students that are certain to pursue in AI in the future")
 
-root_agent = Agent(
+
+def terminate_and_save_tool(tool_context: ToolContext, data_to_record: IntentionContent):
+    # 1. Force write the target data into the session state variables
+    tool_context.state["intention_recorder"] = data_to_record
+
+    # 2. Terminate the agent run immediately from within the tool
+    tool_context.actions.transfer_to_agent = "manager_agent"
+
+    return {}
+
+def check_interested(interested_or_not: bool , tool_context: ToolContext) -> dict[Any,Any]:
+    """Indicate if the student is interested in AI career"""
+    tool_context.state["interested_in_AI"] = interested_or_not
+    return {}
+
+intention_identifier_agent = Agent(
     model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
     name='intention_identifier_agent',
     description='A specialized sub-agent to identify intention of student using AI education consultant',
@@ -31,32 +46,40 @@ root_agent = Agent(
     take next. 
     
     GENERAL STEP:
-    1. Request input for understanding student's intention: 
-       Example - 
-       "To get started, feel free to share your intention. Here are some common intention from students using this application :
-       1. I come here since I heard AI jobs are one of the most in-demand career right now. However, I am uncertain if I am 
-          suitable for this path
-       2. I am certain that I will pursue in AI-related career. However, I either don't know how to start to progress or 
-          which specific AI career path I should choose
-       3. I am certain that I will pursue in a specific AI career path but I don't know how to start learning and progressing"
-       
-    2. Identify intention and assign their :
+    ### STEP 1: Identify intention:
        - Identify value for intention field (data type: Enum named Intention) to be provided for output schema 
-       - If students was uncertain if they are going to pursue AI-related career, let the value be Intention(1) 
-       - If students was certain about pursuing AI-career, but uncertain which specific path to choose, let value be Intention(2)
-       - If students was certain about pursuing a specific path of AI-career, but didn't know how to start or progress, 
-         let value be Intention(3). Also, if the student specify the specific AI-career path, record it in the output schema too. If not, ask the student 
-         for it (** Only when the value is Intention(3)**).
+       
+       - If students was uncertain if they are going to pursue AI-related career:
+         * Example: Student imply that he/she was curious due to the fast growing trend of AI, but not sure they suit for this career or not
+         * Let the value be Intention(1). 
+         * (MANDATORY) PROCEED TO STEP 2
+       
+       - ELSE IF students was certain about pursuing AI-career, but uncertain which specific path to choose:
+         * Example: Student imply that he/she sure want to do something related to AI in the future, but not sure which specific job related to AI he/she want to pick
+         * Let value be Intention(2)
+         * (MANDATORY) PROCEED TO STEP 2
+         
+       - ELSE IF students was certain about pursuing a specific path of AI-career , but didn't know how to start or progress:
+         * Example: Student state a specific specialization of AI such as machine learning, NLP, prompt engineering etc, but not sure how to start or progress
+         * Let value be Intention(3)
+         * Record the name for the specific AI-career path. If the student didn't specify, keep asking the student until he/she says the specific AI-career path
+         * (MANDATORY) PROCEED TO STEP 2
     
-    IMPORTANT: Your response MUST be valid JSON matching this structure:
+    ### STEP 2:  
+       - If value for intention field is 2 or 3, call check_interested with True boolean value as argument
+       - If value for intention field is 1, call check_interested with False boolean value 
+       
+    ### STEP 3: Generate JSON:
+       - Generate valid JSON matching this structure as argument for terminate-and_save_tool to be called later on:
         {
             "intention": value for intention field recorded ,
-            "specific_path": "specific AI-career path if students mentioned. if not, left it as None",
+            "specific_path": "specific AI-career path if students mentioned (Example: machine learning, NLP, data scientist). if not, left it as None",
         }
-        
-    DO NOT include any explanations or additional text outside the JSON response.
-
+       - PROCEED TO STEP 4
+    
+    ### STEP 4: (MANDATORY) CALL terminate_and_save_tool
+       - (MANDATORY) IMMEDIATELY AFTER GENERATING RESPONSE, SAVE RESPONSE AND RETURN CONTROL TO manager_agent by calling terminate_and_save_tool with the JSON response as arguments . 
+       - DON'T ENGAGE IN CONVERSATION 
     """,
-    output_schema=IntentionContent,
-    output_key="intention_recorder",
+    tools=[terminate_and_save_tool,check_interested],
 )
