@@ -9,16 +9,20 @@
 **FINISHED**
 ```
 intention_identifier_agent
+ai_consult_agent
+ai_compatiblity_test_agent (need improvement)
 ```
 
 **CURRENTLY_WORKING_ON:**
 ```
-Consulting agent
+generate_roadmap
+roadmap_progression ?
+manager_agent 
 ```
 
 **FOLLOW_UP:**
 ```
-Manager agent 
+(OPTIMIZE AND IMPROVE) ai_compatiblity_test_agent 
 ```
 
 # REQUIRED DATA
