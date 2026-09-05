@@ -157,21 +157,19 @@ def record_score_from_student(question_score_dict:Dict,tool_context:ToolContext)
         if question_score_dict[each_section]:
             score += sum(question_score_dict[each_section]) / len(question_score_dict[each_section])
 
-    known_from_prompt = tool_context.state.get("recorded_profile", {})
-    for each_trait in known_from_prompt:
-        trait = known_from_prompt[each_trait]
-        if trait["status"]:
-            if trait["status"].lower() == "dislike":
-                score += DISLIKE
-            elif trait["status"].lower() == "neutral":
-                score += NEUTRAL
-            elif trait["status"].lower() == "like":
-                score += LIKE
-            elif trait["status"].lower() == "experienced":
-                score += EXPERIENCED
+    # known_from_prompt = tool_context.state.get("recorded_profile", {})
+    # for each_trait in known_from_prompt:
+    #     trait = known_from_prompt[each_trait]
+    #     if trait["status"]:
+    #         if trait["status"].lower() == "dislike":
+    #             score += DISLIKE
+    #         elif trait["status"].lower() == "neutral":
+    #             score += NEUTRAL
+    #         elif trait["status"].lower() == "like":
+    #             score += LIKE
+    #         elif trait["status"].lower() == "experienced":
+    #             score += EXPERIENCED
 
-    if "salary_preference" in question_score_dict and question_score_dict["salary_preference"]:
-        score += sum(question_score_dict["salary_preference"])/len(question_score_dict["salary_preference"])
 
     if tool_context.state.get("salary_preference", False):
         score += 4
@@ -257,13 +255,18 @@ You must evaluate the student across these foundational criteria:
    - Directly invoke the `compatibility_questionnaire` tool for all categories without any confimation.
    
 5. After invoking 'compatibility_questionnaire' (BOTH OPTION A AND OPTION B MUST FOLLOW):
-   ** HOW TO ASK QUESTIONS AND RECORD SCORE: ** 
-   1. ANY QUESTIONS COMING OUT FROM compatibility_questionnaire should be added into recorder_profile
+   CRITICAL RULE:
+   1. ANY QUESTIONS COMING OUT FROM compatibility_questionnaire should NOT be added into recorded_profile
    2. IF THE CURRENT EVALUATED PILLAR is found inside recorded_profile in session state, don't need to ask extra question about this pillar 
-   3. Inspect the returned 'questions' and ask the student the questions inside the 'questions' dictionary pillar by pillar (key by key) and record the score by key.
-   4. (MANDATORY) EVERYTIME THE STUDENT GIVE SCORES, RECORD the score (1-5) given by the students and replace the values for each key with the list of score
-   5. (MANDATORY) PROMPT QUESTIONS from the 'questions' dictionary key by key at one time. DON'T OUTPUT ALL QUESTIONS IN DICTIONARY AT ONCE
-   6. (MANDATORY) BEFORE EVERY JUMPING TO THE NEXT KEY, if you notice for a particular evaluation pillar in question_score_dict has low score (1-2) 
+   3. (MANDATORY) ENSURE EVERYTHING IN THE 'questions' dictionary is accessed and asked 
+
+
+   ** HOW TO ASK QUESTIONS AND RECORD SCORE: ** 
+
+   1. Inspect the returned 'questions' and ask the student the questions inside the 'questions' dictionary pillar by pillar (key by key) and record the score by key.
+   2. (MANDATORY) EVERYTIME THE STUDENT GIVE SCORES, RECORD the score (1-5) given by the students and replace the values for each key with the list of score
+   3. (MANDATORY) PROMPT QUESTIONS from the 'questions' dictionary key by key at one time. DON'T OUTPUT ALL QUESTIONS IN DICTIONARY AT ONCE
+   4. (MANDATORY) BEFORE EVERY JUMPING TO THE NEXT KEY, if you notice for a particular evaluation pillar in question_score_dict has low score (1-2) 
       IN THE LIST (value by the respective pillar key), we wish to ensure if the student find himself lacking in this particular pillar
         > feel free to ask more questions about each evaluation pillar by yourself (with rating 1-5)
         > update the list of marks for each pillar inside the 'question_score_dict' dictionary
@@ -272,9 +275,9 @@ You must evaluate the student across these foundational criteria:
         > Example (Prefer to come up by your own POSITIVE QUESTIONS):
            * DON'T ASK : "Do you find yourself getting frustrated easily when debugging or troubleshooting? (Rate 1-5)" 
              (Reason to reject: Asking negative emotion of students encountering one of the evaluating pillar)
-   7. IF notice the current question going to be prompted is almost similar to question asked before, dont ask it again, however update the current list with the score from the similar question
-   8.(IMPORTANT) Ensure that every key in question_score_dict is not an empty list (at least every pillar has been asked and record a mark before)
-   9.(MANDATORY) CHECK IF both recorded_profile and question_score_dict both combined cover all the essential evaluation pillar.
+   5. IF notice the current question going to be prompted is almost similar to question asked before, dont ask it again, however update the current list with the score from the similar question
+   6.(IMPORTANT) Ensure that every key in question_score_dict is not an empty list (at least every questions from 'questions' has been asked and record a mark before)
+   
    Example: 
      * If returned dictionary 'questions' = {"math_and_logic" : [list of two questions],'debugging': [list of three questions]}
      * Prompt the student ONLY QUESTIONS from the list accessed by key "math_and_logic":
@@ -414,3 +417,18 @@ You must evaluate the student across these foundational criteria:
 # "Do you wish to become a lead expert in tech field in the future ?"
 # for expectation(FOCUS ON DESIRED OUTCOMES)
 # -
+#
+# 4.(MANDATORY)
+# ENSURE
+# THAT
+# ANY
+# KEY
+# FROM
+# recorded_profile
+# SHOULD
+# NOT
+# BE
+# ADDED
+# INTO
+# question_score_dict
+
