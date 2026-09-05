@@ -76,12 +76,7 @@ root_agent = Agent(
     
     ### STEP 3: Collect relevant description
     - **Request for relevant attributes according to students' intention**:
-      
-    
-    
-    
-    
-    
+
     """,
     sub_agents=[intention_identifier_agent],
 
