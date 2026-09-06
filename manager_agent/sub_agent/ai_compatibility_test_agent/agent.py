@@ -1,75 +1,92 @@
 import os
-
-from enum import Enum
-
-from pandas.io.pytables import format_doc
-from pydantic import BaseModel,Field
-from typing import Optional,Any,List,Literal,Dict
-
+import random
+from typing import Dict, Any, List, Literal
+from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+
+# Google ADK imports
 from google.adk.agents.llm_agent import Agent
 from google.adk.models.lite_llm import LiteLlm
-from google.adk.tools import ToolContext,FunctionTool
+from google.adk.tools import ToolContext, FunctionTool
 
+# Load environment variables
 load_dotenv(".env")
 
-
+# Define Constants matching your compatibility agent style
 DISLIKE = 1
 NEUTRAL = 2
 WILLING_TO_LEARN = 3
 LIKE = 4
 EXPERIENCED = 5
 
+
+# ----------------------------------------------------------------------
+# 1. DEFINE SCHEMAS (Pydantic Models)
+# ----------------------------------------------------------------------
+
 class UserTrait(BaseModel):
     """
     Structured extraction of a student's stated preferences from their free-text input.
-    Helps avoid raw keyword string matching.
+    Helps identify foundational computer science and mathematical compatibility indicators.
     """
-    traits_category: Literal["math_and_logic", "programming", "debugging_patience"]
-    status: Literal["like", "dislike", "neutral","familiar","experienced","beginner"]
+    traits_category: Literal[
+        "math_and_logic", "programming", "debugging_patience", "continuous_learning", "salary_preference"]
+    status: Literal["like", "dislike", "neutral", "familiar", "experienced", "beginner", "unmentioned"]
     willing_to_learn: bool
     evidence: str = Field(
         description="The exact quote or logical reasoning from the user indicating this preference."
     )
 
-class CompatibilityRatings(BaseModel):
+
+class CompatibilityScores(BaseModel):
     """
-    Enforces a strict 1-to-5 Likert scale interface for scoring the structured questionnaire.
+    Structured inputs for questionnaire scoring.
+    Enforces a strict 1-to-5 Likert scale interface for compiling student scores.
     """
-    math_and_logic: int = Field(
-        ...,
-        description="Ratings (1 to 5) for math, analytical, and logical statements."
-    )
-    debugging_patience: int = Field(
-        ...,
-        description="Ratings (1 to 5) for debugging, trial-and-error, and troubleshooting resilience."
-    )
-    programming: int = Field(
-        ...,
-        description="Ratings (1 to 5) for software development, hands-on building, and coding."
-    )
+    math_and_logic: List[int] = Field(default_factory=list,
+                                      description="Scores (1 to 5) for math/analytical/logical statements.")
+    programming: List[int] = Field(default_factory=list,
+                                   description="Scores (1 to 5) for software development and hands-on coding statements.")
+    debugging_patience: List[int] = Field(default_factory=list,
+                                          description="Scores (1 to 5) for troubleshooting, trial-and-error, and debugging resilience.")
+    continuous_learning: List[int] = Field(default_factory=list,
+                                           description="Scores (1 to 5) for continuous learning, framework curiosity, and upskilling.")
 
 
 # ----------------------------------------------------------------------
-# Tool A: record_user_traits
+# 2. DEFINE NATIVE TOOL FUNCTIONS & STATE MACHINE
 # ----------------------------------------------------------------------
-def record_user_traits(traits: List[UserTrait], tool_context = ToolContext) -> Dict[str, Any]:
+
+def reset_session(tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Saves parsed traits (likes, dislikes, and extracted evidence) directly
-    into the active session state. This allows the agent to intelligently
-    determine which dimensions are still 'unmentioned'.
+    Resets the session state, clearing previous recorded traits, scores, and evaluations.
+    Call this when the student starts a brand-new session, says 'hi', 'hello', 'start over', or 'reset'.
+    """
+    tool_context.state["recorded_profile"] = {}
+    tool_context.state["salary_preference"] = False
+    tool_context.state["compatibility_results"] = {}
+    tool_context.state["questions_queue"] = []
+    tool_context.state["current_question_index"] = 0
+    tool_context.state["scores_collected"] = {
+        "math_and_logic": [],
+        "programming": [],
+        "debugging_patience": [],
+        "continuous_learning": []
+    }
+    tool_context.state["is_probing"] = False
+    tool_context.state["current_probing_pillar"] = None
+    print("\n[STATE MACHINE] Session state reset completed.")
+    return {"status": "success", "message": "Session state has been completely reset."}
 
-    Args:
-        traits: List of UserTrait, each storing student's preference for either math and logic, debugging patience, or programming with evidence from student's prompt
-        tool_context: Context of tool, used to update state of session
 
-    Returns:
-        dict : Dictionary that indicate if the operation is success and the recorded student profile
+def record_user_traits(traits: List[UserTrait], tool_context: ToolContext = ToolContext) -> Dict[str, Any]:
+    """
+    Saves parsed traits (likes, dislikes, and extracted evidence) directly into the active session state.
+    This allows the agent to intelligently determine which dimensions are still 'unmentioned'.
     """
     if "recorded_profile" not in tool_context.state:
         tool_context.state["recorded_profile"] = {}
 
-    # Retrieve existing profile or initialize an empty dictionary
     recorded_profile = tool_context.state.get("recorded_profile", {})
 
     for trait in traits:
@@ -79,148 +96,327 @@ def record_user_traits(traits: List[UserTrait], tool_context = ToolContext) -> D
         }
 
     tool_context.state["recorded_profile"] = recorded_profile
+    print(f"\n[STATE MACHINE] Saved traits to state: {recorded_profile}")
     return {"status": "success", "recorded_profile": recorded_profile}
 
 
-# ----------------------------------------------------------------------
-# Tool B: compatibility_questionnaire
-# ----------------------------------------------------------------------
-def compatibility_questionnaire(tool_context:ToolContext) -> Dict[str, Any]:
+def want_high_salary(tool_context: ToolContext) -> Dict[Any, Any]:
+    """Marks that the student explicitly desires a high salary path."""
+    tool_context.state["salary_preference"] = True
+    print("\n[STATE MACHINE] Salary preference marked high (True)")
+    return {}
+
+
+def start_compatibility_assessment(tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Returns specific diagnostic statements for missing categories.
-    Students rate these from 1 (Strongly Disagree) to 5 (Strongly Agree).
-    Grounded directly in SimplifyNext Hackathon.pdf and Determine_suitable_for_AI.txt.
+    100% DETERMINISTIC GUARANTEE: Initializes the question queue programmatically based on the student's
+    extracted profile, randomizes the order, and saves the state to ensure the queue is strictly followed.
     """
     all_questions = {
         "math_and_logic": [
-            "I enjoy solving problems where the solution is not immediately obvious.",  # [3]
-            "I am comfortable with mathematics, algorithms, and analytical thinking."  # [8]
+            "I enjoy solving problems where the solution is not immediately obvious.",
+            "I am comfortable with mathematics, algorithms, and analytical thinking."
         ],
         "programming": [
-            "I enjoy writing and debugging code to solve problems.",  # [2]
-            "I enjoy combining different technologies to build a complete system."  # [3]
+            "I enjoy writing and debugging code to solve problems.",
+            "I enjoy combining different technologies to build a complete system."
         ],
         "debugging_patience": [
-            "I enjoy troubleshooting systems when something does not work as expected.",  # [3]
-            "I enjoy experimenting with different approaches to find the best solution."  # [2]
+            "I enjoy troubleshooting systems when something does not work as expected.",
+            "I enjoy experimenting with different approaches to find the best solution."
         ],
         "continuous_learning": [
-            "I am comfortable learning new programming languages, frameworks, and technologies continuously.",  # [2]
-            "I enjoy keeping up with tech news and tinkering with new tools on weekends."  # [1]
+            "I am comfortable learning new programming languages, frameworks, and technologies continuously.",
+            "I enjoy keeping up with tech news and tinkering with new tools on weekends."
         ],
         "salary_preference": [
-            "Is a starting junior salary of SGD 6,000 - SGD 8,500/month aligned with your expectations?"  # [4]
-        ],
+            "Is a starting junior salary of SGD 6,000 - SGD 8,500/month aligned with your expectations?"
+        ]
     }
 
     if "recorded_profile" not in tool_context.state:
         tool_context.state["recorded_profile"] = {}
 
-    # Filter questions to only return the categories the student hasn't addressed yet
-    selected_questions = {
-        cat: all_questions[cat] for cat in all_questions if (cat not in tool_context.state["recorded_profile"] and cat != "salary_preference" and cat != "continuous_learning")
-    }
+    recorded_profile = tool_context.state.get("recorded_profile", {})
 
-    for key in tool_context.state["recorded_profile"]:
-        if  tool_context.state["recorded_profile"][key]["status"] in ["familiar","beginner"]:
-            selected_questions["continuous_learning_for_"+key] = all_questions["continuous_learning"]
+    # Filter categories that the student hasn't addressed yet
+    selected_categories = []
+    core_pillars = ["math_and_logic", "programming", "debugging_patience", "continuous_learning"]
+    for pillar in core_pillars:
+        # Core fix: always include unaddressed/unmentioned categories
+        if (pillar not in recorded_profile) or (recorded_profile[pillar].get("status") == "unmentioned"):
+            selected_categories.append(pillar)
 
+    # Include salary preference statement if not already saved in state
     if "salary_preference" not in tool_context.state:
-        selected_questions["salary_preference"] = all_questions["salary_preference"]
+        selected_categories.append("salary_preference")
 
+    # Flatten and jumble all questions into a single flat list
+    flat_questions = []
+    for cat in selected_categories:
+        for q in all_questions[cat]:
+            flat_questions.append({
+                "text": q,
+                "category": cat
+            })
+
+    # Shuffle to prevent status and category bias
+    random.shuffle(flat_questions)
+
+    # Initialize queue states in session state
+    tool_context.state["questions_queue"] = flat_questions
+    tool_context.state["current_question_index"] = 0
+    tool_context.state["scores_collected"] = {
+        "math_and_logic": [],
+        "programming": [],
+        "debugging_patience": [],
+        "continuous_learning": []
+    }
+    tool_context.state["is_probing"] = False
+    tool_context.state["current_probing_pillar"] = None
+
+    print(f"\n[STATE MACHINE] Dynamic queue initialized with {len(flat_questions)} questions.")
+
+    if not flat_questions:
+        results = evaluate_results_from_state(tool_context)
+        return {
+            "status": "completed",
+            "message": "All categories have been pre-filled from your profile! Evaluation completed.",
+            "results": results
+        }
+
+    first_question = flat_questions[0]
     return {
-        "instruction": "Please rate these statements from 1 (Strongly Disagree) to 5 (Strongly Agree):",
-        "questions": selected_questions
+        "status": "next_question",
+        "text": first_question["text"],
+        "category": first_question["category"],
+        "index": 1,
+        "total": len(flat_questions),
+        "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
     }
 
 
-def want_high_salary(tool_context:ToolContext) -> Dict[Any,Any]:
-    tool_context.state["salary_preference"] = True
-    return {}
-
-def record_score_from_student(question_score_dict:Dict,tool_context:ToolContext) -> Dict:
+def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Compiling every score recorded and determine if the student is suitable to pursue in AI career
-    Args:
-      question_score_dict: Dictionary with each question as its key and their corresponding score as its value
-      tool_context: Context of tool
-
-    Return:
-        Dict: Dictionary indicating success of operation and result.
+    100% DETERMINISTIC GUARANTEE: Submits rating for the current active statement,
+    manages the pointer index, triggers probing questions dynamically on scores of 1-2,
+    and returns to the standard queue automatically, ensuring the flow is never lost.
     """
+    if "questions_queue" not in tool_context.state or "current_question_index" not in tool_context.state:
+        return {
+            "status": "error",
+            "message": "Assessment has not been initialized. Please execute start_compatibility_assessment first."
+        }
 
-    score = 0
-    for each_section in question_score_dict:
-        if question_score_dict[each_section]:
-            score += sum(question_score_dict[each_section]) / len(question_score_dict[each_section])
+    # Constrain rating to 1-5
+    rating = max(1, min(5, rating))
+    queue = tool_context.state["questions_queue"]
+    idx = tool_context.state["current_question_index"]
+    scores = tool_context.state.get("scores_collected", {
+        "math_and_logic": [],
+        "programming": [],
+        "debugging_patience": [],
+        "continuous_learning": []
+    })
 
-    # known_from_prompt = tool_context.state.get("recorded_profile", {})
-    # for each_trait in known_from_prompt:
-    #     trait = known_from_prompt[each_trait]
-    #     if trait["status"]:
-    #         if trait["status"].lower() == "dislike":
-    #             score += DISLIKE
-    #         elif trait["status"].lower() == "neutral":
-    #             score += NEUTRAL
-    #         elif trait["status"].lower() == "like":
-    #             score += LIKE
-    #         elif trait["status"].lower() == "experienced":
-    #             score += EXPERIENCED
+    # IndexError Prevention Guard: If rating is submitted after queue is fully completed
+    if idx >= len(queue):
+        results = evaluate_results_from_state(tool_context)
+        return {
+            "status": "completed",
+            "message": "The assessment is already completed! Here are your compatibility results:",
+            "results": results
+        }
 
+    # Predefined positive probing questions for low ratings (1-2)
+    probing_questions = {
+        "math_and_logic": "Do you enjoy breaking down complex logical puzzles or playing strategic board games?",
+        "programming": "Have you ever felt a sense of pride or excitement when seeing a program you wrote run successfully?",
+        "debugging_patience": "Do you feel a sense of deep satisfaction when you finally locate and fix a tricky bug in code?",
+        "continuous_learning": "Do you enjoy watching tech videos or reading about new technology trends online?"
+    }
+
+    # If the active state is in "probing" mode
+    if tool_context.state.get("is_probing", False):
+        pillar = tool_context.state.get("current_probing_pillar")
+        if pillar and pillar in scores:
+            scores[pillar].append(rating)
+            print(f"[STATE MACHINE] Recorded probing score {rating} for pillar '{pillar}'")
+
+        # Turn off probing mode
+        tool_context.state["is_probing"] = False
+        tool_context.state["current_probing_pillar"] = None
+        # Safely increment the index to return to the standard queue
+        idx += 1
+        tool_context.state["current_question_index"] = idx
+    else:
+        # Standard questionnaire processing
+        current_q = queue[idx]
+        category = current_q["category"]
+
+        if category in scores:
+            scores[category].append(rating)
+            print(f"[STATE MACHINE] Recorded standard score {rating} for pillar '{category}'")
+        elif category == "salary_preference":
+            if rating >= 4:
+                tool_context.state["salary_preference"] = True
+                print("[STATE MACHINE] High salary alignment marked True")
+
+        # Trigger dynamic probing if score is low (1-2) and category is probeable
+        if rating <= 2 and category in probing_questions:
+            tool_context.state["is_probing"] = True
+            tool_context.state["current_probing_pillar"] = category
+            # Explicitly persist scores state before returning
+            tool_context.state["scores_collected"] = scores
+            probe_text = probing_questions[category]
+            print(f"[STATE MACHINE] Low score detected on '{category}'. Triggering positive probe.")
+            return {
+                "status": "probing_question",
+                "text": probe_text,
+                "pillar": category,
+                "instruction": "Since you rated the previous statement low, let's explore your strengths. Rate this from 1 (Strongly Disagree) to 5 (Strongly Agree):"
+            }
+        else:
+            # Increment pointer index to advance the queue
+            idx += 1
+            tool_context.state["current_question_index"] = idx
+
+    # Explicitly write back the scores to session state so nested changes get serialized!
+    tool_context.state["scores_collected"] = scores
+
+    # Check if there are more statements in the queue
+    if idx < len(queue):
+        next_q = queue[idx]
+        return {
+            "status": "next_question",
+            "text": next_q["text"],
+            "category": next_q["category"],
+            "index": idx + 1,
+            "total": len(queue),
+            "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+        }
+    else:
+        # Queue is exhausted! Automatically execute scoring calculations
+        results = evaluate_results_from_state(tool_context)
+        return {
+            "status": "completed",
+            "message": "All statements have been rated successfully! Here are your compatibility results:",
+            "results": results
+        }
+
+
+def evaluate_results_from_state(tool_context: ToolContext) -> Dict[str, Any]:
+    """
+    Core scoring function running programmatically on accumulated state variables.
+    """
+    pillars = [["math_and_logic", "Math & Logic"], ["programming", "Programming Intensity"],
+               ["debugging_patience", "Debugging Resilience"], ["continuous_learning", "Continuous Learning"]]
+    score = 0.0
+    known_from_prompt = tool_context.state.get("recorded_profile", {})
+    scores_collected = tool_context.state.get("scores_collected", {})
+
+    status_score_map = {
+        "dislike": DISLIKE,
+        "neutral": NEUTRAL,
+        "beginner": 2.0,
+        "familiar": WILLING_TO_LEARN,
+        "like": LIKE,
+        "experienced": EXPERIENCED
+    }
+
+    pillar_breakdown = {}
+
+    for pillar_key, pillar_name in pillars:
+        ratings = scores_collected.get(pillar_key, [])
+        if ratings and len(ratings) > 0:
+            pillar_avg = sum(ratings) / len(ratings)
+            score += pillar_avg
+            pillar_breakdown[pillar_name] = round(pillar_avg, 2)
+        elif pillar_key in known_from_prompt:
+            trait = known_from_prompt[pillar_key]
+            status = trait.get("status", "neutral").lower()
+            pillar_val = float(status_score_map.get(status, NEUTRAL))
+            score += pillar_val
+            pillar_breakdown[pillar_name] = pillar_val
+        else:
+            score += float(NEUTRAL)
+            pillar_breakdown[pillar_name] = float(NEUTRAL)
 
     if tool_context.state.get("salary_preference", False):
-        score += 4
+        score += 4.0
 
-    MAX_SCORE = 20
-    suitability_pct = (score / MAX_SCORE) * 100
+    MAX_SCORE = 20.0
+    suitability_pct = (score / MAX_SCORE) * 100.0
+    suitability_pct = min(100.0, suitability_pct)
 
-    # Determine the profile category using Coursera's Green/Orange/Low matching bands [5, 6]
     if suitability_pct >= 80:
-        band = "Strong AI Signal (Green Match)"  # [5]
+        band = "Strong AI Signal (Green Match)"
         advice = (
             "You show a stellar natural alignment for an AI career! Your interests in programming, "
-            "problem-solving, and continuous experimentation [9] mean you will likely thrive in technical "
-            "AI Engineering roles [1]. A starting junior salary of SGD 6,000 - 8,500 is very much aligned [4]!"
+            "problem-solving, and continuous experimentation mean you will likely thrive in technical "
+            "AI Engineering roles. A starting junior salary of SGD 6,000 - 8,500 is very much aligned!"
         )
     elif suitability_pct >= 60:
-        band = "Foundational Match (Orange Match)"  # [6]
+        band = "Foundational Match (Orange Match)"
         advice = (
-            "You have a solid foundation! However, you may need additional technical or mathematical skill development [6]. "
+            "You have a solid foundation! However, you may need additional technical or mathematical skill development. "
             "If you dislike deep mathematical theory but love building apps, you might want to pivot towards applied "
-            "generative AI development (using API integrations and frameworks) or AI Product Management [10, 11]."
+            "generative AI development (using API integrations and frameworks) or AI Product Management."
         )
     else:
         band = "Low Current Alignment"
         advice = (
             "A highly technical AI engineering path might feel frustrating right now. Consider standard software "
-            "engineering, UX design, or other tech domains first [12, 13], or explore low-code AI integrations to test the waters."
+            "engineering, UX design, or other tech domains first, or explore low-code AI integrations to test the waters."
         )
 
-    return {
+    results = {
         "status": "success",
         "suitability_percentage": round(suitability_pct, 1),
         "evaluation_band": band,
-        # "pillar_breakdowns": {
-        #     "Math & Logic": sum(ratings.math_and_logic) / len(
-        #         ratings.math_and_logic) if ratings.math_and_logic else 1.0,
-        #     "Debugging Resilience": sum(ratings.debugging_patience) / len(
-        #         ratings.debugging_patience) if ratings.debugging_patience else 1.0,
-        #     "Continuous Learning": sum(ratings.continuous_learning) / len(
-        #         ratings.continuous_learning) if ratings.continuous_learning else 1.0,
-        #     "Programming Intensity": sum(ratings.programming) / len(
-        #         ratings.programming) if ratings.programming else 1.0,
-        # },
+        "pillar_breakdowns": {
+            "Math & Logic": pillar_breakdown.get("Math & Logic", 2.0),
+            "Programming Intensity": pillar_breakdown.get("Programming Intensity", 2.0),
+            "Debugging Resilience": pillar_breakdown.get("Debugging Resilience", 2.0),
+            "Continuous Learning": pillar_breakdown.get("Continuous Learning", 2.0),
+        },
         "career_advice": advice
     }
 
+    tool_context.state["compatibility_results"] = results
+    return results
 
-root_agent = Agent(
-    model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
-    name='root_agent',
-    description='A helpful sub-agent responsible to test if a student is interested to pursue in AI career',
-    instruction=
+
+def record_score_from_student(scores: CompatibilityScores, tool_context: ToolContext) -> Dict[str, Any]:
     """
-You are the "AI Compatibility Test Agent", an empathetic, supportive, yet analytical career counselor.
+    Backward-compatibility wrapper. If an external process or old logic attempts to call this directly,
+    it maps the ratings to state and programmatically triggers evaluation.
+    """
+    scores_collected = tool_context.state.get("scores_collected", {
+        "math_and_logic": [],
+        "programming": [],
+        "debugging_patience": [],
+        "continuous_learning": []
+    })
+
+    if scores.math_and_logic:
+        scores_collected["math_and_logic"] = scores.math_and_logic
+    if scores.programming:
+        scores_collected["programming"] = scores.programming
+    if scores.debugging_patience:
+        scores_collected["debugging_patience"] = scores.debugging_patience
+    if scores.continuous_learning:
+        scores_collected["continuous_learning"] = scores.continuous_learning
+
+    tool_context.state["scores_collected"] = scores_collected
+    return evaluate_results_from_state(tool_context)
+
+
+# ----------------------------------------------------------------------
+# 3. CONFIGURE THE LLM AGENT (SYSTEM PROMPT)
+# ----------------------------------------------------------------------
+
+SYSTEM_INSTRUCTION = """You are the "AI Compatibility Test Agent", an empathetic, supportive, yet analytical career counselor.
 
 Your objective is to evaluate if a student is well-suited to pursue a career in Artificial Intelligence based on their skills, personality, and work style.
 
@@ -231,78 +427,62 @@ You must evaluate the student across these foundational criteria:
 3. Debugging Patience: Do they have the patience for debugging, data cleaning, and trial-and-error?
 4. Expectation: Are starting salaries of SGD 6,000–8,500/month aligned with their expectations?
 
-## CRITICAL RULE
-> For score evaluation and recording system, PLEASE USE THE TOOLS GIVEN (record_score_from_student) instead of calculating by your own
+## CRITICAL RULES FOR STATE-MACHINE SYSTEM TOOLS
+1. DONT COMPUTE OR GUESS RESULTS: You are strictly forbidden from maintaining question indices, deciding when to pause for low scores, or calculating matching percentages on your own. Let the Python state machine tools handle the entire loop deterministically!
+2. NO AUTONOMOUS OR AUTOMATIC SCORING (STRICT NO-AUTO RULE):
+   - You are strictly forbidden from inventing, simulating, or automatically generating ratings (1-5) on behalf of the student.
+   - For every statement presented, you must write the statement out in the chat and then STOP and WAIT for the user's manual response/rating.
+   - You MUST ONLY execute `submit_single_rating(rating=...)` after the user has explicitly typed a rating (1-5) in response to that specific statement. Do NOT invoke `submit_single_rating` with prefilled, auto-calculated, or simulated numbers!
+3. INITIAL GREETING RULE (NO PREMATURE TOOL CALLS):
+   - You are strictly forbidden from executing any tool calls (like `record_user_traits` or `start_compatibility_assessment`) on the very first turn when the user says a simple greeting (e.g. "hi", "hello", "hey", "start").
+   - You must only reset the state by running `reset_session`, welcome the user warmly, present Option A and Option B clearly, and wait for their choice.
+4. COMPULSORY QUESTIONNAIRE TOOL EXECUTION: 
+   - You are strictly prohibited from printing, generating, listing, or guessing questionnaire statements on your own from your memory.
+   - To get the questions, you MUST call the `start_compatibility_assessment` tool to initiate the queue.
+   - You CANNOT ask the student even a single statement from the questionnaire without first executing the `start_compatibility_assessment` tool!
 
-## CONVERSATIONAL WORKFLOW
-1. Welcome the student warmly. Suggest they share their interests, skills, personality, or preferred starting salary.
+## MASKING & JUMBLED WORKFLOW RULES (ANTI-BIAS)
+1. STRICT MASKING OF PATH LABELS: To ensure the student is completely unbiased, NEVER mention, output, or imply what category (e.g. math_and_logic, programming, debugging_patience) any question maps to.
+2. ONE-BY-ONE presentation: Present the statements strictly one at a time. Wait for the user to reply before presenting the next statement.
 
+## CONVERSATIONAL WORKFLOW (STRICT TURN-BY-TURN PROTOCOL)
+1. Welcome the student warmly. Suggest they share their interests, basic programming backgrounds, favorite data types, or preferred starting salary.
 2. Provide them with two clear choices to begin:
-   - OPTION A: Type a natural language prompt explaining their background.
-   - OPTION B: Take a structured questionnaire rating statements on a scale of 1 to 5.
+    *  OPTION A: Type a natural language prompt explaining their background.
+    *  OPTION B: Take a structured questionnaire rating statements on a scale of 1 to 5.
+3. **If the user chooses OPTION A (Natural Language Prompt):**
+    - **Turn 1 (Prompt for Bio):** Warmly ask the student to describe their background, skills, interests, and what they enjoy/dislike in as much detail as possible. Do NOT call any other tools yet! Stop and wait for the student's background text.
+    - **Turn 2 (Process Bio):** Once the student provides their background text:
+        * Immediately call the `record_user_traits` tool to save the student's traits, even if they are a complete beginner.
+        * Parse their response for any general computing backgrounds, Python skills, or math comfort:
+           - If they mention writing Python scripts, generate a UserTrait for `programming` with status "beginner" or "familiar", and willing_to_learn true.
+           - If they mention calculus or algebra comfort, generate a UserTrait for `math_and_logic` with status "familiar" or "like", and willing_to_learn true.
+        * In parallel in this turn, call `want_high_salary` ONLY WHEN STUDENT MENTIONED A HIGH AMOUNT OF SALARY. DONT call it if they didn't.
+        * Do NOT call `start_compatibility_assessment` in parallel in this turn to avoid state race conditions.
+    - **Turn 3 (Fetch Questionnaire Gaps):** Once you receive the `success` response of `record_user_traits` in the tool context, you MUST immediately call the `start_compatibility_assessment` tool in this turn to fetch the remaining gaps. Do NOT wait or ask any questions first!
+    - **Turn 4+ (Queue Progression):** Inspect the returned statement text from the tool response. Present it to the student and stop and wait for their manual rating response.
+4. **If the user chooses OPTION B (Structured Questionnaire):**
+    - **Turn 1 (Initialize State Machine):** Directly call the `start_compatibility_assessment` tool to initialize the state machine queue.
+    - **Turn 2+ (Queue Progression):** Present the first returned statement to the student. STOP and WAIT for their manual rating (1-5) input.
+5. **State-Machine Progression Rule:**
+   - Every time the student provides a score for a statement:
+     * Immediately execute `submit_single_rating(rating=...)` with that score.
+     * Inspect the returned tool response:
+       - If status is `"next_question"`: Print the returned statement (`text`) and wait for their rating.
+       - If status is `"probing_question"`: Print the returned probe statement (`text`) and its prompt instruction, and wait for their rating.
+       - If status is `"completed"`: The assessment is done! Report their suitability percentage, evaluation band, breakdown metrics, and Singapore salary-grounded advice exactly as returned by the tool.
+"""
 
-3. If they provide a Prompt (ONLY LIMITED FOR Option A, NOT OPTION B):
-   - Immediately parse their response, generate a list with UserTrait objects for evaluation pillar 1,2,3 ;
-     and run the `record_user_traits` tool to save analyzed traits.
-   - (ONLY IF USER PICK OPTION A) Call want_high_salary ONLY WHEN STUDENT MENTIONED A HIGH AMOUNT OF SALARY
-   - DONT CALL want_high_salary when student didn't mentioned about high salary or he/she mentioned money is the biggest concern.
-   - Call compatibility_questionnaire tool to ask questions about evaluation pillars that had been missed out. PROCEED TO STEP 5
-
-4. If they prefer the Questionnaire (Option B):
-   - Directly invoke the `compatibility_questionnaire` tool for all categories without any confimation.
-
-5. After invoking 'compatibility_questionnaire' (BOTH OPTION A AND OPTION B MUST FOLLOW):
-   CRITICAL RULE:
-   1. ANY QUESTIONS COMING OUT FROM compatibility_questionnaire should NOT be added into recorded_profile
-   2. IF THE CURRENT EVALUATED PILLAR is found inside recorded_profile in session state, don't need to ask extra question about this pillar
-   3. (MANDATORY) ENSURE EVERYTHING IN THE 'questions' dictionary is accessed and asked
-
-
-   ** HOW TO ASK QUESTIONS AND RECORD SCORE: **
-
-   1. Inspect the returned 'questions' and ask the student the questions inside the 'questions' dictionary pillar by pillar (key by key) and record the score by key.
-   2. (MANDATORY) EVERYTIME THE STUDENT GIVE SCORES, RECORD the score (1-5) given by the students and replace the values for each key with the list of score
-   3. (MANDATORY) PROMPT QUESTIONS from the 'questions' dictionary key by key at one time. DON'T OUTPUT ALL QUESTIONS IN DICTIONARY AT ONCE
-   4. (MANDATORY) BEFORE EVERY JUMPING TO THE NEXT KEY, if you notice for a particular evaluation pillar in question_score_dict has low score (1-2)
-      IN THE LIST (value by the respective pillar key), we wish to ensure if the student find himself lacking in this particular pillar
-        > feel free to ask more questions about each evaluation pillar by yourself (with rating 1-5)
-        > update the list of marks for each pillar inside the 'question_score_dict' dictionary
-        > IMPORTANT: IF WANT TO ASK EXTRA QUESTION, THE MAXIMUM IS 2 ONLY FOR EACH PILLAR or KEY
-        > IMPORTANT: WHEN ASKING EXTRA QUESTION, PLEASE ONLY ASK POSITIVE QUESTION FOCUSING ON POSSIBILITIES, STRENGTHS AND DESIRED OUTCOMES
-        > Example (Prefer to come up by your own POSITIVE QUESTIONS):
-           * DON'T ASK : "Do you find yourself getting frustrated easily when debugging or troubleshooting? (Rate 1-5)"
-             (Reason to reject: Asking negative emotion of students encountering one of the evaluating pillar)
-   5. IF notice the current question going to be prompted is almost similar to question asked before, dont ask it again, however update the current list with the score from the similar question
-   6.(IMPORTANT) Ensure that every key in question_score_dict is not an empty list (at least every questions from 'questions' has been asked and record a mark before)
-
-   Example:
-     * If returned dictionary 'questions' = {"math_and_logic" : [list of two questions],'debugging': [list of three questions]}
-     * Prompt the student ONLY QUESTIONS from the list accessed by key "math_and_logic":
-       > wait student to reply scores for QUESTIONS from the list accessed by key "debugging" and record the score. If student give irrelevant input, ask him
-         to reinput again before proceeding
-       > Student offer score 3 for the first questions and 4 for the second question
-       > DONT REPLACE THE DICTIONARY. JUST MODIFY THE DICTIONARY (but let us call it question_score_dict onwards)
-       > Replace the value for key "math_and_logic" with a list [3,4] and REMAIN the key to be the same
-     * After student reply the score for "math_and_logic", then prompt the student ONLY QUESTIONS from the list accessed by key "debugging"
-       > wait student to reply scores for QUESTIONS from the list accessed by key "debugging" and record the score. If student give irrelevant input, ask him
-         to reinput again before proceeding
-       > Student offer score 1 for the first questions,  5 for the second question and 2 for the third question
-       > DONT REPLACE question_score_dict. JUST MODIFY question_score_dict
-       > Replace the value for key "debugging" with a list [1,5,2] and REMAIN the key to be the same
-       > Notice that the list has one low score '1', thus ASK AN EXTRA QUESTION (MAX 2) and ask them to rate by 1-5 again.
-       > If student give a score of 5, then the question_score_dict will update key "debugging" with a new value which
-          is a updated list [1,5,2,5]
-     * Final output : question_score_dict = {"math_and_logic" : [3,4],'debugging': [1,5,2,5]}
-
-
-6. Once profile is completed:
-   - Invoke `record_score_from_student` to compile and process the scores.
-   - REPORT their matching percentage, their matching band color, and practical advice grounded in Singapore's career standards ONLY USING RESPONSE FROM
-     'record_score_from_student' PLEASE DO NOT USE YOUR OWN FORMULA.
-
-    """,
-    tools=[record_user_traits,compatibility_questionnaire,want_high_salary,record_score_from_student],
+# Configure Agent instance for Compatibility Assessment
+root_agent = Agent(
+    model=os.getenv("BEDROCK_MODEL"),
+    name="ai_compatibility_test_agent",
+    description="A strategic consulting agent responsible to identify if a student is suited to pursue an AI career.",
+    instruction=SYSTEM_INSTRUCTION,
+    tools=[record_user_traits, start_compatibility_assessment, submit_single_rating, want_high_salary,
+           record_score_from_student, reset_session]
 )
+
 #
 # - If notice the question about to be asked is almost the same to questions asked before,
 #   Example:
