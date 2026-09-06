@@ -1,6 +1,8 @@
 import os
 
 from enum import Enum
+
+from google.adk.integrations.gcs import storage_tool
 from pydantic import BaseModel,Field
 from typing import Optional,Any
 
@@ -23,6 +25,11 @@ class IntentionContent(BaseModel):
 
 
 def terminate_and_save_tool(tool_context: ToolContext, data_to_record: IntentionContent):
+    """
+     Args:
+      data_to_record: Self-made data type to indicate student intention of using our application
+    """
+
     # 1. Force write the target data into the session state variables
     tool_context.state["intention_recorder"] = data_to_record
 

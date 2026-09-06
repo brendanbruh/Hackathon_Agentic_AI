@@ -60,8 +60,13 @@ class CompatibilityScores(BaseModel):
 # 2. DEFINE NATIVE TOOL FUNCTIONS & STATE MACHINE
 # ----------------------------------------------------------------------
 
+# tool_context keep track of state for this particular session, so it can be modified and read by every tools
+
 def reset_session(tool_context: ToolContext) -> Dict[str, Any]:
     """
+    Return:
+        Dictionary indicating the success of resetting a session
+
     Resets the session state, clearing previous recorded traits, scores, and evaluations.
     Call this when the student starts a brand-new session, says 'hi', 'hello', 'start over', or 'reset'.
     """
@@ -84,6 +89,9 @@ def reset_session(tool_context: ToolContext) -> Dict[str, Any]:
 
 def record_user_traits(traits: List[UserTrait], tool_context: ToolContext = ToolContext) -> Dict[str, Any]:
     """
+    Return:
+        Dictionary indicating the success of operation and the traits
+
     Saves parsed traits (likes, dislikes, and extracted evidence) directly into the active session state.
     This allows the agent to intelligently determine which dimensions are still 'unmentioned'.
     """
@@ -109,6 +117,9 @@ def want_high_salary(tool_context: ToolContext) -> Dict[Any, Any]:
 
 def start_compatibility_assessment(tool_context: ToolContext) -> Dict[str, Any]:
     """
+    Return:
+        Dictionary storing a list of pre-determined questions in jumbled way
+
     100% DETERMINISTIC GUARANTEE: Initializes the question queue programmatically based on the student's
     extracted profile, randomizes the order, and saves the state to ensure the queue is strictly followed.
     """
@@ -197,6 +208,11 @@ def start_compatibility_assessment(tool_context: ToolContext) -> Dict[str, Any]:
 
 def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, Any]:
     """
+    Args:
+        rating: Integer representing rating for ONE question only at one time to reduce load for LLM model
+    Return:
+        Dictionary storing status of the question queue (error or completed or pending)
+
     100% DETERMINISTIC GUARANTEE: Submits rating for the current active statement,
     manages the pointer index, triggers probing questions dynamically on scores of 1-2,
     and returns to the standard queue automatically, ensuring the flow is never lost.
@@ -309,6 +325,9 @@ def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, An
 
 def evaluate_results_from_state(tool_context: ToolContext) -> Dict[str, Any]:
     """
+    Return:
+        Dictionary recording the success of the current operation and final result
+
     Core scoring function running programmatically on accumulated state variables.
     """
     pillars = [["math_and_logic", "Math & Logic"], ["programming", "Programming Intensity"],
@@ -390,6 +409,9 @@ def evaluate_results_from_state(tool_context: ToolContext) -> Dict[str, Any]:
 
 def record_score_from_student(scores: CompatibilityScores, tool_context: ToolContext) -> Dict[str, Any]:
     """
+    Args:
+        scores: CompatibilityScores storing list of scores for each scope
+
     Backward-compatibility wrapper. If an external process or old logic attempts to call this directly,
     it maps the ratings to state and programmatically triggers evaluation.
     """
@@ -415,6 +437,7 @@ def record_score_from_student(scores: CompatibilityScores, tool_context: ToolCon
 # ----------------------------------------------------------------------
 # 3. CONFIGURE THE LLM AGENT (SYSTEM PROMPT)
 # ----------------------------------------------------------------------
+# Using Chain of Thoughts by sharing the thought process behind the decisions
 
 SYSTEM_INSTRUCTION = """You are the "AI Compatibility Test Agent", an empathetic, supportive, yet analytical career counselor.
 Your objective is to evaluate if a student is well-suited to pursue a career in Artificial Intelligence based on their skills, personality, and work style.
@@ -434,7 +457,7 @@ You must evaluate the student across these foundational criteria:
 3. INITIAL GREETING RULE (NO PREMATURE TOOL CALLS):
 - You are strictly forbidden from executing any tool calls (like `record_user_traits` or `start_compatibility_assessment`) on the very first turn when the user says a simple greeting (e.g. "hi", "hello", "hey", "start").
 - You must only reset the state by running `reset_session`, welcome the user warmly, present Option A and Option B clearly, and wait for their choice.
-4. COMPULSORY QUESTIONNAIRE TOOL EXECUTION:
+4. (MANDATORY & IMPORTANT) COMPULSORY QUESTIONNAIRE TOOL EXECUTION:
 - You are strictly prohibited from printing, generating, listing, or guessing questionnaire statements on your own from your memory.
 - To get the questions, you MUST call the `start_compatibility_assessment` tool to initiate the queue.
 - You CANNOT ask the student even a single statement from the questionnaire without first executing the `start_compatibility_assessment` tool!
@@ -471,6 +494,7 @@ You must evaluate the student across these foundational criteria:
 - If status is `"next_question"`: Print the returned statement (`text`) and wait for their rating.
 - If status is `"probing_question"`: Print the returned probe statement (`text`) and its prompt instruction, and wait for their rating.
 - If status is `"completed"`: The assessment is done! Report their suitability percentage, evaluation band, breakdown metrics, and Singapore salary-grounded advice exactly as returned by the tool.
+6. **CONTROL TRANSFER RULE**: Upon completing the career consultation (i.e., after `record_score_from_student` has been called and the final results are reported), you MUST immediately call the `transfer_control_to_tool` tool to explicitly return control to the orchestrator.
 
 (MANDATORY) AFTER REPORTING THE RESULT AND FIND THE 'result' dictionary status COMPLETED, PLEASE CALL transfer_control_to_root
 (MANDATORY) ENSURE EVERY OUTPUT KEY OR DATA STORED IN STATE SHOULD BE A VALID JSON SO IT IS JSON SERIALIZABLE 

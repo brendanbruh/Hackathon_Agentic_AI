@@ -85,6 +85,11 @@ class CareerTrackScores(BaseModel):
 
 def record_user_traits(traits: List[UserTrait], tool_context=ToolContext) -> Dict[str, Any]:
     """
+    Args:
+        traits: List of UserTrait to indicate if the student beforehand mentioned his preference for a particular AI career
+    Return:
+        Dictionary indicating the success of operation and the traits
+
     Saves parsed traits (likes, dislikes, and extracted evidence) directly into the active session state.
     This allows the agent to intelligently determine which dimensions are still 'unmentioned'.
     """
@@ -102,7 +107,9 @@ def record_user_traits(traits: List[UserTrait], tool_context=ToolContext) -> Dic
 
 def career_path_questionnaire(tool_context: ToolContext) -> Dict[str, Any]:
     """
-    Returns specific diagnostic statements/questions for career categories that need further clarification.
+    Return:
+        Dictionary with specific diagnostic statements/questions for career categories that need further clarification.
+
     These are calibrated around basic CS/programming, data preferences, personalities, and aspirations.
     The returned list of questions is completely flattened and jumbled (randomly shuffled) under the hood.
     This ensures students rate statements honestly without knowing which career path they map to.
@@ -152,8 +159,8 @@ def career_path_questionnaire(tool_context: ToolContext) -> Dict[str, Any]:
     # Filter categories that the student hasn't addressed yet
     selected_categories = {}
     for cat in all_questions:
-        if (cat not in tool_context.state["recorded_profile"] and \
-                cat != "salary_preference" and \
+        if (cat not in tool_context.state["recorded_profile"] and
+                cat != "salary_preference" and
                 cat != "continuous_learning"):
             selected_categories[cat] = all_questions[cat]
 
@@ -191,6 +198,11 @@ def want_high_salary(tool_context: ToolContext) -> Dict[Any, Any]:
 
 def record_score_from_student(scores: CareerTrackScores, tool_context: ToolContext) -> Dict:
     """
+    Args:
+        scores: CareerTrackScores storing structured scores given by the student for each specific AI career track.
+    Return:
+        Dictionary for storing the final deduced optimal career path for the student
+
     Compiling every score recorded and determine which specific AI career path the student should take.
     Uses the exact same scoring style as your text file but calculates career match vectors.
     """
@@ -240,8 +252,7 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
             cl_avg = sum(cl_ratings) / len(cl_ratings)
             # Ensure track_scores[track] exists before modifying
             if track in track_scores:
-                track_scores[track] += (
-                                               cl_avg - 3.0) * 0.25  # Adjust score up/down slightly based on continuous learning interest
+                track_scores[track] += (cl_avg - 3.0) * 0.25  # Adjust score up/down slightly based on continuous learning interest
 
     # Add salary preference weighting
     if tool_context.state.get("salary_preference", False):
@@ -394,6 +405,7 @@ Roadblock: The Application gap (inventing theoretical models that are computatio
 * OPTION A: Type a natural language prompt explaining their background.
 * OPTION B: Take a structured questionnaire rating statements on a scale of 1 to 5.
 * REMEMBER: Do NOT execute any tool calls on initial greeting!
+
 2. If they select OPTION A (Natural Language Prompt):
 * Wait for them to provide their background/interests description.
 * Once they provide their background description:
@@ -401,6 +413,7 @@ Roadblock: The Application gap (inventing theoretical models that are computatio
 - If they specified a high salary expectation, you can call `want_high_salary` in parallel in this same Turn 1.
 - **Turn 2 (Transition Step):** Once you receive the `record_user_traits` success response in your tool-context, you **MUST immediately call the `career_path_questionnaire` tool** in this turn to fetch the remaining gaps. Do NOT wait or ask the student any questions first—execute `career_path_questionnaire` immediately!
 - **Turn 3 (Evaluation Step):** Present the returned jumbled questions to the student **one-by-one**.
+
 3. If they select OPTION B (Structured Questionnaire):
 * **Turn 1:** Directly call the `career_path_questionnaire` tool to get all statements.
 * **Turn 2:** Present the returned jumbled questions to the student **one-by-one**.
@@ -423,6 +436,7 @@ Example positive questions to use:
 8. Once profile is completed (meaning all questions from the list have been completely asked and scored):
 * Invoke `record_score_from_student` to compile and process the scores.
 * REPORT their matching percentage, their matching band color, and practical advice grounded in Singapore's career standards ONLY USING THE RESPONSE FROM 'record_score_from_student'. PLEASE DO NOT USE YOUR OWN FORMULA.
+9. **CONTROL TRANSFER RULE**: Upon completing the career consultation (i.e., after `record_score_from_student` has been called and the final results are reported), you MUST immediately call the `transfer_control_to_tool` tool to explicitly return control to the orchestrator.
 
 (MANDATORY) AFTER REPORTING THE RESULT AND FIND THE 'results' dictionary status success , PLEASE CALL transfer_control_to_root
 (MANDATORY) ENSURE EVERY OUTPUT KEY OR DATA STORED IN STATE SHOULD BE A VALID JSON SO IT IS JSON SERIALIZABLE 
