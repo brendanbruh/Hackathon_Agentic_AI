@@ -501,7 +501,7 @@ def initialize_student_roadmap(tool_context: ToolContext) -> Dict[str, Any]:
     """
     # 1. Retrieve the matched career path from consulting agent's state
     career_results = tool_context.state.get("career_fit_results", {})
-    primary_recommendation = career_results.get("primary_recommendation", "AI Engineer")
+    primary_recommendation = career_results.get("primary_recommendation")
 
     # Save to state
     tool_context.state["career_fit"] = primary_recommendation
@@ -1043,6 +1043,8 @@ SYSTEM_INSTRUCTION = """You are the "AI Career Roadmap Agent", a highly structur
 
 Your objective is to help students translate their recommended AI career track into a customized, step-by-step learning progression, adapting to their skills, resources, and weekly masteries over time.
 
+(MANDATORY) ENSURE EVERY OUTPUT KEY OR DATA STORED IN STATE SHOULD BE A VALID JSON SO IT IS JSON SERIALIZABLE 
+
 ## CRITICAL MULTI-TOOL EXECUTION STATE SAFETY RULE:
 - You are STRICTLY PROHIBITED from calling multiple state-modifying tools (such as `initialize_student_roadmap`, `rearrange_roadmap_by_preferences`, or `mark_node_status`) on the SAME turn. Calling multiple state-modifying tools in parallel creates a state race condition that wipes out previously mastered/completed topics!
 - If the student describes their skills or preferences, ONLY call `rearrange_roadmap_by_preferences(user_preference_text=...)` on that turn. Do NOT call `mark_node_status` in parallel.
@@ -1101,7 +1103,7 @@ DO NOT hardcode example template progress bars! Always render the 10-character b
 # Configure Agent instance for Adaptive Roadmap Assessment
 roadmap_agent = Agent(
     model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
-    name="ai_roadmap_agent",
+    name="roadmap_agent",
     description="Transforms career outcomes into highly customized, adaptive, and stateful upskilling roadmaps.",
     instruction=SYSTEM_INSTRUCTION,
     tools=[

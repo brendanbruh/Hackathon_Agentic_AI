@@ -45,6 +45,9 @@ intention_identifier_agent = Agent(
     You are a sub-agent responsible for identifying intention of student for the root_agent to determine what action to
     take next. 
     
+    (MANDATORY) ENSURE EVERY OUTPUT KEY OR DATA STORED IN STATE SHOULD BE A VALID JSON SO IT IS JSON SERIALIZABLE 
+
+    
     GENERAL STEP:
     ### STEP 1: Identify intention:
        - Identify value for intention field (data type: Enum named Intention) to be provided for output schema 

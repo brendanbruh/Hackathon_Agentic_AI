@@ -104,38 +104,38 @@ def check_state_and_route(tool_context: ToolContext) -> Dict[str, Any]:
             else:
                 # If yes, call ai_consult_agent (the rest is like 3)
                 if not career_fit_results:
-                    tool_context.actions.transfer_to_agent = "ai_consult_agent"
+                    tool_context.actions.transfer_to_agent = "career_consult_agent"
                     return {
                         "status": "routing",
-                        "target_agent": "ai_consult_agent",
+                        "target_agent": "career_consult_agent",
                         "message": "Student is suitable! Routing to 'ai_consult_agent' to determine career track."
                     }
                 else:
-                    tool_context.actions.transfer_to_agent = "ai_roadmap_agent"
+                    tool_context.actions.transfer_to_agent = "roadmap_agent"
                     return {
                         "status": "routing",
-                        "target_agent": "ai_roadmap_agent",
+                        "target_agent": "roadmap_agent",
                         "message": f"Routing to 'ai_roadmap_agent' to build roadmap for {state.get('career_fit')}."
                     }
 
     # RULE 3: If is Intention(2), call ai_consult_agent to find specialized career fit
     if "2" in intention_str or "UNCERTAIN_SPECIFIC" in intention_str:
         if not career_fit_results:
-            tool_context.actions.transfer_to_agent = "ai_consult_agent"
+            tool_context.actions.transfer_to_agent = "career_consult_agent"
             return {
                 "status": "routing",
-                "target_agent": "ai_consult_agent",
-                "message": "Intention 2: Routing to 'ai_consult_agent' to discover optimal AI specialization."
+                "target_agent": "career_consult_agent",
+                "message": "Intention 2: Routing to 'career_consult_agent' to discover optimal AI specialization."
             }
         else:
             # Career fit found, transfer to roadmap agent
             if "career_fit" not in state:
                 state["career_fit"] = career_fit_results.get("primary_match") or career_fit_results.get("primary_recommendation")
-            tool_context.actions.transfer_to_agent = "ai_roadmap_agent"
+            tool_context.actions.transfer_to_agent = "roadmap_agent"
             return {
                 "status": "routing",
-                "target_agent": "ai_roadmap_agent",
-                "message": f"Career track '{state['career_fit']}' determined. Routing to 'ai_roadmap_agent'."
+                "target_agent": "roadmap_agent",
+                "message": f"Career track '{state['career_fit']}' determined. Routing to 'roadmap_agent'."
             }
 
     # RULE 4: If is Intention(3), call roadmap_agent directly and let them personalize it
@@ -156,11 +156,11 @@ def check_state_and_route(tool_context: ToolContext) -> Dict[str, Any]:
                 "primary_match_pct": 100.0,
                 "career_advice": f"Direct customized roadmap generated for {career_fit}."
             }
-        tool_context.actions.transfer_to_agent = "ai_roadmap_agent"
+        tool_context.actions.transfer_to_agent = "roadmap_agent"
         return {
             "status": "routing",
-            "target_agent": "ai_roadmap_agent",
-            "message": f"Intention 3: Routing directly to 'ai_roadmap_agent' for career: {career_fit}."
+            "target_agent": "roadmap_agent",
+            "message": f"Intention 3: Routing directly to 'roadmap_agent' for career: {career_fit}."
         }
 
     return {
@@ -182,8 +182,8 @@ SYSTEM_INSTRUCTION = """You are the "AI Career Orchestrator Manager", Singapore'
 Your task is to coordinate the workflow of 4 specialized sub-agents:
 1. `intention_identifier_agent` (used to classify student's initial intent)
 2. `ai_compatibility_test_agent` (evaluates general suitability for AI career path)
-3. `ai_consult_agent` (matches specific technical skills to specialized AI track)
-4. `ai_roadmap_agent` (builds customizable and interactive skill checklists)
+3. `career_consult_agent` (matches specific technical skills to specialized AI track)
+4. `roadmap_agent` (builds customizable and interactive skill checklists)
 
 ## ORCHESTRATION RULES:
 
@@ -209,6 +209,8 @@ Your task is to coordinate the workflow of 4 specialized sub-agents:
 
 4.  **SUSPENSION GATEWAY**:
     - If the user types "exit", "quit", or "save progress", execute `trigger_graceful_exit` to save state and gracefully suspend the session.
+    
+(MANDATORY) ENSURE EVERY OUTPUT KEY OR DATA STORED IN STATE SHOULD BE A VALID JSON SO IT IS JSON SERIALIZABLE 
 """
 
 root_agent = Agent(
