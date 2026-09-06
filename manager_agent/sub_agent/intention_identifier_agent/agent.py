@@ -27,7 +27,7 @@ def terminate_and_save_tool(tool_context: ToolContext, data_to_record: Intention
     tool_context.state["intention_recorder"] = data_to_record
 
     # 2. Terminate the agent run immediately from within the tool
-    tool_context.actions.transfer_to_agent = "manager_agent"
+    tool_context.actions.transfer_to_agent ="root_agent"
 
     return {}
 
@@ -42,7 +42,7 @@ intention_identifier_agent = Agent(
     description='A specialized sub-agent to identify intention of student using AI education consultant',
     instruction=
     """
-    You are a sub-agent responsible for identifying intention of student for the manager_agent to determine what action to
+    You are a sub-agent responsible for identifying intention of student for the root_agent to determine what action to
     take next. 
     
     GENERAL STEP:
@@ -78,7 +78,7 @@ intention_identifier_agent = Agent(
        - PROCEED TO STEP 4
     
     ### STEP 4: (MANDATORY) CALL terminate_and_save_tool
-       - (MANDATORY) IMMEDIATELY AFTER GENERATING RESPONSE, SAVE RESPONSE AND RETURN CONTROL TO manager_agent by calling terminate_and_save_tool with the JSON response as arguments . 
+       - (MANDATORY) IMMEDIATELY AFTER GENERATING RESPONSE, SAVE RESPONSE AND RETURN CONTROL TO root_agent by calling terminate_and_save_tool with the JSON response as arguments . 
        - DON'T ENGAGE IN CONVERSATION 
     """,
     tools=[terminate_and_save_tool,check_interested],

@@ -1099,7 +1099,7 @@ DO NOT hardcode example template progress bars! Always render the 10-character b
 """
 
 # Configure Agent instance for Adaptive Roadmap Assessment
-root_agent = Agent(
+roadmap_agent = Agent(
     model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
     name="ai_roadmap_agent",
     description="Transforms career outcomes into highly customized, adaptive, and stateful upskilling roadmaps.",

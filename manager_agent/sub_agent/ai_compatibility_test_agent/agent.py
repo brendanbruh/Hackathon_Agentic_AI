@@ -9,6 +9,9 @@ from google.adk.agents.llm_agent import Agent
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import ToolContext, FunctionTool
 
+# Import common tool for control transfer
+from sub_agent.common_tool import transfer_control_to_root  # Assuming common_tools.py is in the same directory
+
 # Load environment variables
 load_dotenv(".env")
 
@@ -86,15 +89,12 @@ def record_user_traits(traits: List[UserTrait], tool_context: ToolContext = Tool
     """
     if "recorded_profile" not in tool_context.state:
         tool_context.state["recorded_profile"] = {}
-
     recorded_profile = tool_context.state.get("recorded_profile", {})
-
     for trait in traits:
         recorded_profile[trait.traits_category] = {
             "status": trait.status,
             "evidence": trait.evidence
         }
-
     tool_context.state["recorded_profile"] = recorded_profile
     print(f"\n[STATE MACHINE] Saved traits to state: {recorded_profile}")
     return {"status": "success", "recorded_profile": recorded_profile}
@@ -133,10 +133,8 @@ def start_compatibility_assessment(tool_context: ToolContext) -> Dict[str, Any]:
             "Is a starting junior salary of SGD 6,000 - SGD 8,500/month aligned with your expectations?"
         ]
     }
-
     if "recorded_profile" not in tool_context.state:
         tool_context.state["recorded_profile"] = {}
-
     recorded_profile = tool_context.state.get("recorded_profile", {})
 
     # Filter categories that the student hasn't addressed yet
@@ -179,13 +177,14 @@ def start_compatibility_assessment(tool_context: ToolContext) -> Dict[str, Any]:
 
     if not flat_questions:
         results = evaluate_results_from_state(tool_context)
+        # **NEW: Transfer control to root after completion**
         return {
             "status": "completed",
             "message": "All categories have been pre-filled from your profile! Evaluation completed.",
             "results": results
         }
 
-    first_question = flat_questions[0]
+    first_question = flat_questions  # Original line was `first_question = flat_questions` which is a list, needs ``
     return {
         "status": "next_question",
         "text": first_question["text"],
@@ -210,6 +209,7 @@ def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, An
 
     # Constrain rating to 1-5
     rating = max(1, min(5, rating))
+
     queue = tool_context.state["questions_queue"]
     idx = tool_context.state["current_question_index"]
     scores = tool_context.state.get("scores_collected", {
@@ -222,6 +222,8 @@ def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, An
     # IndexError Prevention Guard: If rating is submitted after queue is fully completed
     if idx >= len(queue):
         results = evaluate_results_from_state(tool_context)
+        # **NEW: Transfer control to root after completion**
+        tool_context.actions.call_tool("transfer_control_to_root", {})
         return {
             "status": "completed",
             "message": "The assessment is already completed! Here are your compatibility results:",
@@ -241,11 +243,12 @@ def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, An
         pillar = tool_context.state.get("current_probing_pillar")
         if pillar and pillar in scores:
             scores[pillar].append(rating)
-            print(f"[STATE MACHINE] Recorded probing score {rating} for pillar '{pillar}'")
+        print(f"[STATE MACHINE] Recorded probing score {rating} for pillar '{pillar}'")
 
         # Turn off probing mode
         tool_context.state["is_probing"] = False
         tool_context.state["current_probing_pillar"] = None
+
         # Safely increment the index to return to the standard queue
         idx += 1
         tool_context.state["current_question_index"] = idx
@@ -253,14 +256,13 @@ def submit_single_rating(rating: int, tool_context: ToolContext) -> Dict[str, An
         # Standard questionnaire processing
         current_q = queue[idx]
         category = current_q["category"]
-
         if category in scores:
             scores[category].append(rating)
             print(f"[STATE MACHINE] Recorded standard score {rating} for pillar '{category}'")
         elif category == "salary_preference":
             if rating >= 4:
                 tool_context.state["salary_preference"] = True
-                print("[STATE MACHINE] High salary alignment marked True")
+            print("[STATE MACHINE] High salary alignment marked True")
 
         # Trigger dynamic probing if score is low (1-2) and category is probeable
         if rating <= 2 and category in probing_questions:
@@ -311,6 +313,7 @@ def evaluate_results_from_state(tool_context: ToolContext) -> Dict[str, Any]:
     """
     pillars = [["math_and_logic", "Math & Logic"], ["programming", "Programming Intensity"],
                ["debugging_patience", "Debugging Resilience"], ["continuous_learning", "Continuous Learning"]]
+
     score = 0.0
     known_from_prompt = tool_context.state.get("recorded_profile", {})
     scores_collected = tool_context.state.get("scores_collected", {})
@@ -325,7 +328,6 @@ def evaluate_results_from_state(tool_context: ToolContext) -> Dict[str, Any]:
     }
 
     pillar_breakdown = {}
-
     for pillar_key, pillar_name in pillars:
         ratings = scores_collected.get(pillar_key, [])
         if ratings and len(ratings) > 0:
@@ -382,7 +384,6 @@ def evaluate_results_from_state(tool_context: ToolContext) -> Dict[str, Any]:
         },
         "career_advice": advice
     }
-
     tool_context.state["compatibility_results"] = results
     return results
 
@@ -398,7 +399,6 @@ def record_score_from_student(scores: CompatibilityScores, tool_context: ToolCon
         "debugging_patience": [],
         "continuous_learning": []
     })
-
     if scores.math_and_logic:
         scores_collected["math_and_logic"] = scores.math_and_logic
     if scores.programming:
@@ -407,8 +407,8 @@ def record_score_from_student(scores: CompatibilityScores, tool_context: ToolCon
         scores_collected["debugging_patience"] = scores.debugging_patience
     if scores.continuous_learning:
         scores_collected["continuous_learning"] = scores.continuous_learning
-
     tool_context.state["scores_collected"] = scores_collected
+
     return evaluate_results_from_state(tool_context)
 
 
@@ -417,7 +417,6 @@ def record_score_from_student(scores: CompatibilityScores, tool_context: ToolCon
 # ----------------------------------------------------------------------
 
 SYSTEM_INSTRUCTION = """You are the "AI Compatibility Test Agent", an empathetic, supportive, yet analytical career counselor.
-
 Your objective is to evaluate if a student is well-suited to pursue a career in Artificial Intelligence based on their skills, personality, and work style.
 
 ## EVALUATION PILLARS
@@ -430,182 +429,43 @@ You must evaluate the student across these foundational criteria:
 ## CRITICAL RULES FOR STATE-MACHINE SYSTEM TOOLS
 1. DONT COMPUTE OR GUESS RESULTS: You are strictly forbidden from maintaining question indices, deciding when to pause for low scores, or calculating matching percentages on your own. Let the Python state machine tools handle the entire loop deterministically!
 2. NO AUTONOMOUS OR AUTOMATIC SCORING (STRICT NO-AUTO RULE):
-   - You are strictly forbidden from inventing, simulating, or automatically generating ratings (1-5) on behalf of the student.
-   - For every statement presented, you must write the statement out in the chat and then STOP and WAIT for the user's manual response/rating.
-   - You MUST ONLY execute `submit_single_rating(rating=...)` after the user has explicitly typed a rating (1-5) in response to that specific statement. Do NOT invoke `submit_single_rating` with prefilled, auto-calculated, or simulated numbers!
-3. INITIAL GREETING RULE (NO PREMATURE TOOL CALLS):
-   - You are strictly forbidden from executing any tool calls (like `record_user_traits` or `start_compatibility_assessment`) on the very first turn when the user says a simple greeting (e.g. "hi", "hello", "hey", "start").
-   - You must only reset the state by running `reset_session`, welcome the user warmly, present Option A and Option B clearly, and wait for their choice.
-4. COMPULSORY QUESTIONNAIRE TOOL EXECUTION: 
-   - You are strictly prohibited from printing, generating, listing, or guessing questionnaire statements on your own from your memory.
-   - To get the questions, you MUST call the `start_compatibility_assessment` tool to initiate the queue.
-   - You CANNOT ask the student even a single statement from the questionnaire without first executing the `start_compatibility_assessment` tool!
+- You are strictly forbidden from inventing, simulating, or automatically generating ratings (1-5) on behalf of the student.
+- For every statement presented, you must write the statement out in the chat and then STOP and WAIT for the user's manual response/rating.
+- You MUST ONLY execute `submit_single_rating(rating=...)` after the user has explicitly typed a rating (1-5) in response to that specific statement. Do NOT invoke `submit_single_rating` with prefilled, auto-calculated, or simulated numbers!
+3. POST-ROUTING INITIALIZATION RULE:
+- When control is transferred to you by the root agent, your first action should be to either `record_user_traits` (if the student provided a bio) or `start_compatibility_assessment` (if the student chose the structured questionnaire), as indicated by the root agent's prompt. You should NOT re-greet the user or present options A/B.
+4. COMPULSORY QUESTIONNAIRE TOOL EXECUTION:
+- You are strictly prohibited from printing, generating, listing, or guessing questionnaire statements on your own from your memory.
+- To get the questions, you MUST call the `start_compatibility_assessment` tool to initiate the queue.
+- You CANNOT ask the student even a single statement from the questionnaire without first executing the `start_compatibility_assessment` tool!
+5. **CONTROL TRANSFER RULE**: Upon completing the compatibility assessment (i.e., when the final results are reported after `submit_single_rating` returns `status: 'completed'`), you MUST immediately call the `transfer_control_to_root` tool to explicitly return control to the orchestrator.
+6. **EXPLICIT RESULT STORAGE**: Your final compatibility evaluation results (including suitability percentage, evaluation band, breakdown metrics, and career advice) are stored in `tool_context.state['compatibility_results']`.
 
 ## MASKING & JUMBLED WORKFLOW RULES (ANTI-BIAS)
 1. STRICT MASKING OF PATH LABELS: To ensure the student is completely unbiased, NEVER mention, output, or imply what category (e.g. math_and_logic, programming, debugging_patience) any question maps to.
 2. ONE-BY-ONE presentation: Present the statements strictly one at a time. Wait for the user to reply before presenting the next statement.
 
 ## CONVERSATIONAL WORKFLOW (STRICT TURN-BY-TURN PROTOCOL)
-1. Welcome the student warmly. Suggest they share their interests, basic programming backgrounds, favorite data types, or preferred starting salary.
-2. Provide them with two clear choices to begin:
-    *  OPTION A: Type a natural language prompt explaining their background.
-    *  OPTION B: Take a structured questionnaire rating statements on a scale of 1 to 5.
-3. **If the user chooses OPTION A (Natural Language Prompt):**
-    - **Turn 1 (Prompt for Bio):** Warmly ask the student to describe their background, skills, interests, and what they enjoy/dislike in as much detail as possible. Do NOT call any other tools yet! Stop and wait for the student's background text.
-    - **Turn 2 (Process Bio):** Once the student provides their background text:
-        * Immediately call the `record_user_traits` tool to save the student's traits, even if they are a complete beginner.
-        * Parse their response for any general computing backgrounds, Python skills, or math comfort:
-           - If they mention writing Python scripts, generate a UserTrait for `programming` with status "beginner" or "familiar", and willing_to_learn true.
-           - If they mention calculus or algebra comfort, generate a UserTrait for `math_and_logic` with status "familiar" or "like", and willing_to_learn true.
-        * In parallel in this turn, call `want_high_salary` ONLY WHEN STUDENT MENTIONED A HIGH AMOUNT OF SALARY. DONT call it if they didn't.
-        * Do NOT call `start_compatibility_assessment` in parallel in this turn to avoid state race conditions.
-    - **Turn 3 (Fetch Questionnaire Gaps):** Once you receive the `success` response of `record_user_traits` in the tool context, you MUST immediately call the `start_compatibility_assessment` tool in this turn to fetch the remaining gaps. Do NOT wait or ask any questions first!
-    - **Turn 4+ (Queue Progression):** Inspect the returned statement text from the tool response. Present it to the student and stop and wait for their manual rating response.
-4. **If the user chooses OPTION B (Structured Questionnaire):**
-    - **Turn 1 (Initialize State Machine):** Directly call the `start_compatibility_assessment` tool to initialize the state machine queue.
-    - **Turn 2+ (Queue Progression):** Present the first returned statement to the student. STOP and WAIT for their manual rating (1-5) input.
-5. **State-Machine Progression Rule:**
-   - Every time the student provides a score for a statement:
-     * Immediately execute `submit_single_rating(rating=...)` with that score.
-     * Inspect the returned tool response:
-       - If status is `"next_question"`: Print the returned statement (`text`) and wait for their rating.
-       - If status is `"probing_question"`: Print the returned probe statement (`text`) and its prompt instruction, and wait for their rating.
-       - If status is `"completed"`: The assessment is done! Report their suitability percentage, evaluation band, breakdown metrics, and Singapore salary-grounded advice exactly as returned by the tool.
+- Every time the student provides a score for a statement:
+* Immediately execute `submit_single_rating(rating=...)` with that score.
+* Inspect the returned tool response:
+- If status is `"next_question"`: Print the returned statement (`text`) and wait for their rating.
+- If status is `"probing_question"`: Print the returned probe statement (`text`) and its prompt instruction, and wait for their rating.
+- If status is `"completed"`: The assessment is done! Report their suitability percentage, evaluation band, breakdown metrics, and Singapore salary-grounded advice exactly as returned by the tool.
+
+
+## (MANDATORY) AFTER REPORTING THE RESULT AND FIND THE 'result' dictionary status COMPLETED, PLEASE CALL transfer_control_to_root
 """
 
 # Configure Agent instance for Compatibility Assessment
-root_agent = Agent(
-    model=os.getenv("BEDROCK_MODEL"),
+ai_compatibility_test_agent = Agent(
+    model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
     name="ai_compatibility_test_agent",
     description="A strategic consulting agent responsible to identify if a student is suited to pursue an AI career.",
     instruction=SYSTEM_INSTRUCTION,
-    tools=[record_user_traits, start_compatibility_assessment, submit_single_rating, want_high_salary,
-           record_score_from_student, reset_session]
+    tools=[
+        record_user_traits, start_compatibility_assessment, submit_single_rating, want_high_salary,
+        record_score_from_student, reset_session,
+        transfer_control_to_root  # Add the new tool here
+    ]
 )
-
-#
-# - If notice the question about to be asked is almost the same to questions asked before,
-#   Example:
-#   * Previous key inspected : "continuous_learning_for_math_and_logic" and its question include "I am comfortable learning
-#     new programming languages, frameworks, and technologies continuously"
-#   * Current key inspected: "continuous_learning_for_debugging_patience" and one of its question include the
-#     almost-identical question, then don't ask the question again.
-#   * For any of this sort of scenario, only ask the question once
-#
-
-# 3.(MANDATORY)
-# AFTER
-# EVERY
-# PILLAR
-# IS
-# ACCESSED
-# ONCE
-# IN
-# question_score_dict
-# BEFORE
-# INVOKING
-# 'record_score_from_student',
-# - Example:
-# *Assuming
-# question_score_dict
-# has
-# value[1, 5]
-# for key "programming", so noticing score 1 is consider a low score,
-# so
-# we
-# need
-# to
-# investigate
-# more in this
-# particular
-# "programming"
-# pillar
-# *If
-# you
-# ask
-# an
-# extra
-# question
-# for "programming" pillar such as "Do you try to build any personal project before ?"
-# and ask
-# them
-# to
-# rate
-# by
-# 1 - 5
-# again.
-# *If
-# student
-# give
-# a
-# score
-# of
-# 5, then
-# the
-# question_score_dict
-# will
-# update
-# key
-# "programming"
-# with a new value which
-# is a
-# updated
-# list[3, 4, 5]
-# - IMPORTANT: IF
-# WANT
-# TO
-# ASK
-# EXTRA
-# QUESTION, THE
-# MAXIMUM
-# IS
-# 5
-# ONLY.(suggested
-# 2 - 3)
-# - IMPORTANT: WHEN
-# ASKING
-# EXTRA
-# QUESTION, PLEASE
-# ONLY
-# ASK
-# POSITIVE
-# QUESTION
-# FOCUSING
-# ON
-# POSSIBILITIES, STRENGTHS
-# AND
-# DESIRED
-# OUTCOMES
-# Example(Prefer
-# to
-# come
-# up
-# by
-# your
-# own):
-# *DON
-# 'T ASK : "Do you find yourself getting frustrated easily when debugging or troubleshooting? (Rate 1-5)"
-# (Reason to reject: Asking negative emotion of students encountering one of the evaluating pillar)
-# *DO
-# ASK: "Do you find fixing a complex bug sastifying"
-# for debugging_patience pillar(FOCUS ON POSSIBILITIES)
-# "Do you like to solve complex or mind-boggling puzzzles"
-# for programming pillar(FOCUS ON STRENGTHS)
-# "Do you wish to become a lead expert in tech field in the future ?"
-# for expectation(FOCUS ON DESIRED OUTCOMES)
-# -
-#
-# 4.(MANDATORY)
-# ENSURE
-# THAT
-# ANY
-# KEY
-# FROM
-# recorded_profile
-# SHOULD
-# NOT
-# BE
-# ADDED
-# INTO
-# question_score_dict
-

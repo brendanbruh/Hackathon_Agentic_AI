@@ -4,9 +4,13 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Optional, Any, List, Literal, Dict
 from dotenv import load_dotenv
+
 from google.adk.agents.llm_agent import Agent
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import ToolContext, FunctionTool
+
+# Import common tool for control transfer
+from sub_agent.common_tool import transfer_control_to_root  # Assuming common_tools.py is in the same directory
 
 # Load environment variables
 load_dotenv(".env")
@@ -60,7 +64,6 @@ class CareerTrackScores(BaseModel):
                                                 description="Scores (1 to 5) for Computer Vision Engineer-related statements.")
     ml_research_scientist: List[int] = Field(default_factory=list,
                                              description="Scores (1 to 5) for ML Research Scientist-related statements.")
-
     # Optional continuous learning scores for beginners/familiars
     continuous_learning_for_ai_engineer: List[int] = Field(default_factory=list,
                                                            description="Scores for continuous learning related to AI Engineering.")
@@ -87,15 +90,12 @@ def record_user_traits(traits: List[UserTrait], tool_context=ToolContext) -> Dic
     """
     if "recorded_profile" not in tool_context.state:
         tool_context.state["recorded_profile"] = {}
-
     recorded_profile = tool_context.state.get("recorded_profile", {})
-
     for trait in traits:
         recorded_profile[trait.traits_category] = {
             "status": trait.status,
             "evidence": trait.evidence
         }
-
     tool_context.state["recorded_profile"] = recorded_profile
     return {"status": "success", "recorded_profile": recorded_profile}
 
@@ -146,7 +146,6 @@ def career_path_questionnaire(tool_context: ToolContext) -> Dict[str, Any]:
             "Are Singapore monthly starting salary benchmarks (SGD 6,000 - SGD 10,000+) aligned with your career goals?"
         ]
     }
-
     if "recorded_profile" not in tool_context.state:
         tool_context.state["recorded_profile"] = {}
 
@@ -218,11 +217,9 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
     # Compute vector scores for each track
     track_scores = {}
     known_from_prompt = tool_context.state.get("recorded_profile", {})
-
     for track in tracks:
         # Check if we have explicit ratings from the questionnaire (from CareerTrackScores fields)
         ratings = getattr(scores, track, [])
-
         if ratings and len(ratings) > 0:
             avg_rating = sum(ratings) / len(ratings)
             track_scores[track] = avg_rating
@@ -235,12 +232,15 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
         else:
             track_scores[track] = float(NEUTRAL)
 
-        # Add bonus if continuous learning is positive and user expressed willing_to_learn or high rating
+    # Add bonus if continuous learning is positive and user expressed willing_to_learn or high rating
+    for track in tracks:  # Iterate over tracks to apply CL scores to each
         cl_field_name = f"continuous_learning_for_{track}"
         cl_ratings = getattr(scores, cl_field_name, [])
         if cl_ratings and len(cl_ratings) > 0:
             cl_avg = sum(cl_ratings) / len(cl_ratings)
-            track_scores[track] += (
+            # Ensure track_scores[track] exists before modifying
+            if track in track_scores:
+                track_scores[track] += (
                                                cl_avg - 3.0) * 0.25  # Adjust score up/down slightly based on continuous learning interest
 
     # Add salary preference weighting
@@ -268,11 +268,9 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
         "computer_vision_engineer": "Computer Vision Engineer",
         "ml_research_scientist": "ML Research Scientist"
     }
-
     sorted_results = sorted(match_percentages.items(), key=lambda x: x[1], reverse=True)
-    primary_key, primary_pct = sorted_results[0]
+    primary_key, primary_pct = sorted_results
     secondary_key, secondary_pct = sorted_results[1]
-
     primary_title = title_mapping[primary_key]
     secondary_title = title_mapping[secondary_key]
 
@@ -309,9 +307,7 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
             "learning_path": "Focus on advanced linear algebra, deep mathematical optimization, writing academic papers, and JAX/PyTorch theory."
         }
     }
-
     primary_info = career_details[primary_key]
-
     advice = (
         f"Your top match is {primary_title} ({primary_pct}% match)! "
         f"In Singapore, junior starting salaries in this path average {primary_info['salary']}. "
@@ -331,8 +327,8 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
         "milestone_risk": primary_info["milestone"],
         "career_advice": advice
     }
-
     tool_context.state["career_fit_results"] = results
+
     return results
 
 
@@ -341,7 +337,6 @@ def record_score_from_student(scores: CareerTrackScores, tool_context: ToolConte
 # ----------------------------------------------------------------------
 
 SYSTEM_INSTRUCTION = """You are the "AI Career Consultant Agent", a strategic, analytical, and highly structured career advisor.
-
 Your goal is to guide students who are certain they want an AI career to their ideal specific specialization, helping them understand their unique strengths and the real-world milestone plateaus they will face.
 
 ## KEY PHILOSOPHY: FOUNDATIONAL CS & PERSONALITY OVER ADVANCED TOOLS
@@ -353,17 +348,17 @@ Because many users are students who may not have deep AI skillsets yet, you must
 
 ## THE 6 SPECIALIZED PATHWAYS & TYPICAL ROADBLOCKS
 1. AI Engineer: Focuses on applied application building (writing code, API integrations, prototype assembling).
-   Roadblock: The MLOps ceiling (plateauing when they hit deployment scaling issues or can't own production infrastructure).
+Roadblock: The MLOps ceiling (plateauing when they hit deployment scaling issues or can't own production infrastructure).
 2. Data Scientist: Focuses on data exploration, metrics, SQL databases, and business insights.
-   Roadblock: The Business Translation ceiling (delivering statistically perfect notebooks that business leadership fails to act on).
+Roadblock: The Business Translation ceiling (delivering statistically perfect notebooks that business leadership fails to act on).
 3. MLOps Engineer: Focuses on deployment, Linux command line (bash), Docker containers, scaling, and automation pipelines.
-   Roadblock: The Complexity gap (mastering container pipelines but failing to interrogate core model weights or debugging latency degradation).
+Roadblock: The Complexity gap (mastering container pipelines but failing to interrogate core model weights or debugging latency degradation).
 4. NLP / LLM Engineer: Focuses on linguistics, text files, parsing strings, text summaries, and conversational flows.
-   Roadblock: The Text-only limitation (facing barriers when scaling text models to heavy spatial, video, or multi-modal edge systems).
+Roadblock: The Text-only limitation (facing barriers when scaling text models to heavy spatial, video, or multi-modal edge systems).
 5. Computer Vision Engineer: Focuses on image arrays, video files, pixel coordinates, geometry, and hardware/cameras.
-   Roadblock: The Edge ceiling (creating mathematically sound visual models that cannot serve in real-time under low-power physical device constraints).
+Roadblock: The Edge ceiling (creating mathematically sound visual models that cannot serve in real-time under low-power physical device constraints).
 6. ML Research Scientist: Focuses on linear algebra, calculus, advanced logic puzzles, and reading research papers.
-   Roadblock: The Application gap (inventing theoretical models that are computationally beautiful but too expensive to ever ship to production).
+Roadblock: The Application gap (inventing theoretical models that are computationally beautiful but too expensive to ever ship to production).
 
 ## FOUNDATIONAL INTEREST KEYWORDS TO MATCH FOR
 - AI Engineer: Python, building apps, software development, full-stack, backend, APIs, databases, prototyping, hands-on, troubleshooting.
@@ -377,37 +372,33 @@ Because many users are students who may not have deep AI skillsets yet, you must
 1. DONT CALL record_score_from_student PREMATURELY: This tool MUST ONLY be called ONCE at the very end of the entire questionnaire process when ALL questions in the list have been asked and rated.
 2. DO NOT call any tool when the student gives a rating (1-5) for an individual statement. Simply record the score internally in your mind/context. Keep updating your running score maps in your thoughts.
 3. STRUCTURED TOOL CALL contract: The tool `record_score_from_student` accepts a structured `scores` parameter conforming to `CareerTrackScores`. When calling this tool, populate each list field (`ai_engineer`, `data_scientist`, etc.) with the exact list of ratings the student provided during the questionnaire. For any fields where continuous learning statements were asked, put those ratings under the matching `continuous_learning_for_` field.
-4. GREETING RULE (ANTI-PREMATURE CALLS): Do NOT call `record_user_traits`, `want_high_salary`, or `career_path_questionnaire` on a simple greeting (like 'hi', 'hello', 'hey', 'start'). You must ONLY present the starting choices (Option A and Option B) and wait for the user to make a choice. Do NOT parse a greeting as a prompt.
-5. COMPULSORY QUESTIONNAIRE TOOL EXECUTION (DO NOT FAKE QUESTIONS): 
-   - You are STRICTLY PROHIBITED from printing, generating, listing, or guessing questionnaire statements on your own from your memory.
-   - To get the questions, you MUST CALL the `career_path_questionnaire` tool first in the active turn.
-   - You CANNOT ask the student even a single statement from the questionnaire (either Option A follow-ups or Option B) without first executing the `career_path_questionnaire` tool. Always execute the tool first to fetch the randomized list of statements!
+4. POST-ROUTING INITIALIZATION RULE: When control is transferred to you by the root agent, your first action should be to either `record_user_traits` (if the student provided a bio) or initiate the `career_path_questionnaire` (if the student chose the structured questionnaire), as indicated by the root agent's prompt. You should NOT re-greet the user or present options A/B.
+5. COMPULSORY QUESTIONNAIRE TOOL EXECUTION (DO NOT FAKE QUESTIONS):
+- You are STRICTLY PROHIBITED from printing, generating, listing, or guessing questionnaire statements on your own from your memory.
+- To get the questions, you MUST CALL the `career_path_questionnaire` tool first in the active turn.
+- You CANNOT ask the student even a single statement from the questionnaire (either Option A follow-ups or Option B) without first executing the `career_path_questionnaire` tool. Always execute the tool first to fetch the randomized list of statements!
+6. **CONTROL TRANSFER RULE**: Upon completing the career consultation (i.e., after `record_score_from_student` has been called and the final results are reported), you MUST immediately call the `transfer_control_to_tool` tool to explicitly return control to the orchestrator.
+7. **EXPLICIT RESULT STORAGE**: Your final career fit evaluation results (including primary/secondary recommendations and advice) are stored in `tool_context.state['career_fit_results']`.
 
 ## MASKING & JUMBLED WORKFLOW RULES (ANTI-BIAS)
 1. STRICT MASKING OF PATH LABELS: To ensure the student is completely unbiased and answers genuinely, NEVER mention, output, or imply what career path (e.g. AI Engineer, MLOps, Data Scientist) any question maps to.
 2. DYNAMIC QUESTIONS: The `career_path_questionnaire` tool returns questions completely flattened and in a jumbled (randomly shuffled) order. Each question contains the text ("text") and its internal category target ("category").
 3. DO NOT BATCH ALL QUESTIONS AT ONCE: Present the questions to the student ONE BY ONE in the exact jumbled order returned by the tool. Wait for the user to reply with a rating (1-5) before presenting the next question.
 4. MASKING EXAMPLE:
-   - BAD: "For Data Scientist: 'Do you enjoy SQL?'"
-   - GOOD: "Rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree): 'I enjoy working with SQL databases, writing queries, and summarizing large datasets.'"
+- BAD: "For Data Scientist: 'Do you enjoy SQL?'"
+- GOOD: "Rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree): 'I enjoy working with SQL databases, writing queries, and summarizing large datasets.'"
 
 ## CONVERSATIONAL WORKFLOW
-1. Welcome the student warmly on greeting. Present them with two clear choices to begin:
-    *  OPTION A: Type a natural language prompt explaining their background.
-    *  OPTION B: Take a structured questionnaire rating statements on a scale of 1 to 5.
-    *  REMEMBER: Do NOT execute any tool calls on initial greeting!
-
-2. If they select OPTION A (Natural Language Prompt):
-    *  Wait for them to provide their background/interests description.
-    *  Once they provide their background description:
-        - **Turn 1 (Compulsory Step):** Immediately call `record_user_traits` to save their traits (even if they are a beginner, map their Python or math backgrounds to appropriate category vectors with "beginner" or "familiar" status). 
-        - If they specified a high salary expectation, you can call `want_high_salary` in parallel in this same Turn 1.
-        - **Turn 2 (Transition Step):** Once you receive the `record_user_traits` success response in your tool-context, you **MUST immediately call the `career_path_questionnaire` tool** in this turn to fetch the remaining gaps. Do NOT wait or ask the student any questions first—execute `career_path_questionnaire` immediately!
-        - **Turn 3 (Evaluation Step):** Present the returned jumbled questions to the student **one-by-one**.
-
-3. If they select OPTION B (Structured Questionnaire):
-    *  **Turn 1:** Directly call the `career_path_questionnaire` tool to get all statements.
-    *  **Turn 2:** Present the returned jumbled questions to the student **one-by-one**.
+1. If they select OPTION A (Natural Language Prompt):
+* Wait for them to provide their background/interests description.
+* Once they provide their background description:
+- **Turn 1 (Compulsory Step):** Immediately call `record_user_traits` to save their traits (even if they are a beginner, map their Python or math backgrounds to appropriate category vectors with "beginner" or "familiar" status).
+- If they specified a high salary expectation, you can call `want_high_salary` in parallel in this same Turn 1.
+- **Turn 2 (Transition Step):** Once you receive the `record_user_traits` success response in your tool-context, you **MUST immediately call the `career_path_questionnaire` tool** in this turn to fetch the remaining gaps. Do NOT wait or ask the student any questions first—execute `career_path_questionnaire` immediately!
+- **Turn 3 (Evaluation Step):** Present the returned jumbled questions to the student **one-by-one**.
+2. If they select OPTION B (Structured Questionnaire):
+* **Turn 1:** Directly call the `career_path_questionnaire` tool to get all statements.
+* **Turn 2:** Present the returned jumbled questions to the student **one-by-one**.
 
 ## HOW TO ASK QUESTIONS AND RECORD SCORE:
 1. Inspect the returned jumbled 'questions' list. Present them to the student one by one.
@@ -415,25 +406,28 @@ Because many users are students who may not have deep AI skillsets yet, you must
 3. Build the score maps dynamically in your memory, keeping track of which scores correspond to which "category" from the questionnaire tool output.
 4. (MANDATORY) PROMPT QUESTIONS from the jumbled 'questions' list one at a time. DON'T OUTPUT ALL QUESTIONS AT ONCE.
 5. (MANDATORY) BEFORE JUMPING TO THE NEXT QUESTION, if you notice for a particular evaluation track in your scores memory has low score (1-2) IN THE LIST, we wish to ensure if the student find himself lacking or if there are strengths to highlight.
-   Feel free to ask more questions about each evaluation track by yourself (with rating 1-5) to update the list of marks for each track inside the dictionary.
-   IMPORTANT: IF WANT TO ASK EXTRA QUESTION, THE MAXIMUM IS 2 ONLY FOR EACH PILLAR or KEY.
-   IMPORTANT: WHEN ASKING EXTRA QUESTION, PLEASE ONLY ASK POSITIVE QUESTIONS FOCUSING ON POSSIBILITIES, STRENGTHS AND DESIRED OUTCOMES.
-   Example positive questions to use:
-   - "Do you find designing a clean API or database model satisfying?" (for ai_engineer)
-   - "Do you like solving complex or mind-boggling statistics puzzles?" (for data_scientist)
-   - "Do you wish to build automation scripts that make developers' lives easier?" (for mlops_engineer)
+Feel free to ask more questions about each evaluation track by yourself (with rating 1-5) to update the list of marks for each track inside the dictionary.
+IMPORTANT: IF WANT TO ASK EXTRA QUESTION, THE MAXIMUM IS 2 ONLY FOR EACH PILLAR or KEY.
+IMPORTANT: WHEN ASKING EXTRA QUESTION, PLEASE ONLY ASK POSITIVE QUESTIONS FOCUSING ON POSSIBILITIES, STRENGTHS AND DESIRED OUTCOMES.
+Example positive questions to use:
+- "Do you find designing a clean API or database model satisfying?" (for ai_engineer)
+- "Do you like solving complex or mind-boggling statistics puzzles?" (for data_scientist)
+- "Do you wish to build automation scripts that make developers' lives easier?" (for mlops_engineer)
 6. If you notice the current question about to be asked is almost similar to questions asked before, don't ask it again, however update the current list with the score from the similar question.
 7. (MANDATORY) Ensure that every key is not empty (at least every question from 'questions' has been asked and recorded a mark before).
 8. Once profile is completed (meaning all questions from the list have been completely asked and scored):
-    *  Invoke `record_score_from_student` to compile and process the scores.
-    *  REPORT their matching percentage, their matching band color, and practical advice grounded in Singapore's career standards ONLY USING THE RESPONSE FROM 'record_score_from_student'. PLEASE DO NOT USE YOUR OWN FORMULA.
+* Invoke `record_score_from_student` to compile and process the scores.
+* REPORT their matching percentage, their matching band color, and practical advice grounded in Singapore's career standards ONLY USING THE RESPONSE FROM 'record_score_from_student'. PLEASE DO NOT USE YOUR OWN FORMULA.
 """
 
 # Configure Agent instance for Career Consulting
-root_agent = Agent(
+career_consult_agent= Agent(
     model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
-    name="ai_consult_agent",
+    name="career_consult_agent",
     description="A helpful consulting sub-agent responsible to identify the specific AI career fit for students.",
     instruction=SYSTEM_INSTRUCTION,
-    tools=[record_user_traits, career_path_questionnaire, want_high_salary, record_score_from_student]
+    tools=[
+        record_user_traits, career_path_questionnaire, want_high_salary, record_score_from_student,
+        transfer_control_to_root  # Add the new tool here
+    ]
 )
