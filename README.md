@@ -23,7 +23,7 @@
   > * intention_identifier_agent : Identify intention of student to help root_agent to decide which other three sub-agents to call
   > * common_tool.py: Store transfer_control_to_root to ensure every sub-agent return control to root_agent after finishing their task
 
-** HOW TO RUN**
+**HOW TO RUN**
 1. Download the whole GitHub repositories
 2. __EITHER__ Run runner.py using any Python platform
    > __OR__ Install google-adk in terminal using pip, then type and excecute adk run manager_agent in terminal 
