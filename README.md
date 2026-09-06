@@ -10,19 +10,18 @@
 ```
 intention_identifier_agent
 ai_consult_agent
-ai_compatiblity_test_agent (need improvement)
+ai_compatiblity_test_agent 
 ```
 
 **CURRENTLY_WORKING_ON:**
 ```
 generate_roadmap
 roadmap_progression ?
-manager_agent 
 ```
 
 **FOLLOW_UP:**
 ```
-(OPTIMIZE AND IMPROVE) ai_compatiblity_test_agent 
+manager_agent
 ```
 
 # REQUIRED DATA
