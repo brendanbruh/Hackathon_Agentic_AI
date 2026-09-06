@@ -102,7 +102,7 @@ async def aws_browser_search(query: str) -> str:
 # =====================================================================
 # 4. INSTANTIATE YOUR GOOGLE ADK AGENT
 # =====================================================================
-root_agent = Agent(
+root_agent_2 = Agent(
     model=LiteLlm(model=os.getenv("BEDROCK_MODEL")),
     name='root_agent',
     description='A helpful assistant for user questions.',
