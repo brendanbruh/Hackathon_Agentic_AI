@@ -1,0 +1,1785 @@
+{
+  "id": "ebef3c66-e60d-4cfd-bc2c-75cd1985bdab",
+  "appName": "ai_compatibility_test_agent",
+  "userId": "user",
+  "state": {
+    "current_question_index": 8,
+    "compatibility_results": {
+      "status": "success",
+      "suitability_percentage": 55,
+      "evaluation_band": "Low Current Alignment",
+      "pillar_breakdowns": {
+        "Math & Logic": 2,
+        "Programming Intensity": 2,
+        "Debugging Resilience": 2,
+        "Continuous Learning": 5
+      },
+      "career_advice": "A highly technical AI engineering path might feel frustrating right now. Consider standard software engineering, UX design, or other tech domains first, or explore low-code AI integrations to test the waters."
+    },
+    "is_probing": false,
+    "current_probing_pillar": null,
+    "questions_queue": [
+      {
+        "text": "I enjoy solving problems where the solution is not immediately obvious.",
+        "category": "math_and_logic"
+      },
+      {
+        "text": "I enjoy combining different technologies to build a complete system.",
+        "category": "programming"
+      },
+      {
+        "text": "I enjoy troubleshooting systems when something does not work as expected.",
+        "category": "debugging_patience"
+      },
+      {
+        "text": "I enjoy experimenting with different approaches to find the best solution.",
+        "category": "debugging_patience"
+      },
+      {
+        "text": "I enjoy writing and debugging code to solve problems.",
+        "category": "programming"
+      },
+      {
+        "text": "I am comfortable learning new programming languages, frameworks, and technologies continuously.",
+        "category": "continuous_learning"
+      },
+      {
+        "text": "I am comfortable with mathematics, algorithms, and analytical thinking.",
+        "category": "math_and_logic"
+      },
+      {
+        "text": "I enjoy keeping up with tech news and tinkering with new tools on weekends.",
+        "category": "continuous_learning"
+      }
+    ],
+    "scores_collected": {
+      "math_and_logic": [],
+      "programming": [],
+      "debugging_patience": [],
+      "continuous_learning": []
+    },
+    "recorded_profile": {},
+    "salary_preference": false,
+    "__session_metadata__": {
+      "displayName": "hi"
+    }
+  },
+  "events": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "hi"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-b14d318d-d2aa-44bb-9c06-bea94ebb7e90",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "7f739f8a-8baa-484f-b433-b2dd55d0bbc0",
+      "timestamp": 1788663065.9632058
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "The user has greeted me with a simple \"hi\". I need to reset the session and provide the initial options to the user.",
+            "thought": true
+          },
+          {
+            "text": "\n"
+          },
+          {
+            "functionCall": {
+              "id": "tooluse_rhbxe3ZKrYiWkWXCEOCp6B",
+              "args": {},
+              "name": "reset_session"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 44,
+        "promptTokenCount": 2643,
+        "thoughtsTokenCount": 26,
+        "totalTokenCount": 2687
+      },
+      "invocationId": "e-b14d318d-d2aa-44bb-9c06-bea94ebb7e90",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "d7350460-eba7-48a7-accc-c51c0732a31e",
+      "timestamp": 1788663066.0280414
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_rhbxe3ZKrYiWkWXCEOCp6B",
+              "name": "reset_session",
+              "response": {
+                "status": "success",
+                "message": "Session state has been completely reset."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-b14d318d-d2aa-44bb-9c06-bea94ebb7e90",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "recorded_profile": {},
+          "salary_preference": false,
+          "compatibility_results": {},
+          "questions_queue": [],
+          "current_question_index": 0,
+          "scores_collected": {
+            "math_and_logic": [],
+            "programming": [],
+            "debugging_patience": [],
+            "continuous_learning": []
+          },
+          "is_probing": false,
+          "current_probing_pillar": null
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "970eb48e-7172-4413-a11e-085688b5fd33",
+      "timestamp": 1788663066.9194252
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Hello! I'm delighted to assist you in evaluating if a career in Artificial Intelligence aligns with your skills, personality, and work style. To start, you have two options:\n\n**OPTION A:** Describe your background, skills, interests, and what you enjoy or dislike in as much detail as possible.\n\n**OPTION B:** Take a structured questionnaire to rate statements on a scale of 1 to 5.\n\nPlease choose one of the options, and let's begin!"
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 96,
+        "promptTokenCount": 2699,
+        "totalTokenCount": 2795
+      },
+      "invocationId": "e-b14d318d-d2aa-44bb-9c06-bea94ebb7e90",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "24333a64-bec8-4a88-8c89-1a1470cefe18",
+      "timestamp": 1788663066.9650502
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "option B"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-5e20d5e8-972c-4a86-bb4f-9e5c87bfccbc",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "5bbf08fd-36c5-4e82-9127-265b69210085",
+      "timestamp": 1788663072.822282
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_bphaPZ5vslXQH3IO52XwXR",
+              "args": {},
+              "name": "start_compatibility_assessment"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 15,
+        "promptTokenCount": 2801,
+        "totalTokenCount": 2816
+      },
+      "invocationId": "e-5e20d5e8-972c-4a86-bb4f-9e5c87bfccbc",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "8ecbbd34-33c8-4651-8a41-68d984551b9d",
+      "timestamp": 1788663072.9079232
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_bphaPZ5vslXQH3IO52XwXR",
+              "name": "start_compatibility_assessment",
+              "response": {
+                "status": "next_question",
+                "text": "I enjoy solving problems where the solution is not immediately obvious.",
+                "category": "math_and_logic",
+                "index": 1,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-5e20d5e8-972c-4a86-bb4f-9e5c87bfccbc",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "questions_queue": [
+            {
+              "text": "I enjoy solving problems where the solution is not immediately obvious.",
+              "category": "math_and_logic"
+            },
+            {
+              "text": "I enjoy combining different technologies to build a complete system.",
+              "category": "programming"
+            },
+            {
+              "text": "I enjoy troubleshooting systems when something does not work as expected.",
+              "category": "debugging_patience"
+            },
+            {
+              "text": "I enjoy experimenting with different approaches to find the best solution.",
+              "category": "debugging_patience"
+            },
+            {
+              "text": "I enjoy writing and debugging code to solve problems.",
+              "category": "programming"
+            },
+            {
+              "text": "I am comfortable learning new programming languages, frameworks, and technologies continuously.",
+              "category": "continuous_learning"
+            },
+            {
+              "text": "I am comfortable with mathematics, algorithms, and analytical thinking.",
+              "category": "math_and_logic"
+            },
+            {
+              "text": "I enjoy keeping up with tech news and tinkering with new tools on weekends.",
+              "category": "continuous_learning"
+            }
+          ],
+          "current_question_index": 0,
+          "scores_collected": {
+            "math_and_logic": [],
+            "programming": [],
+            "debugging_patience": [],
+            "continuous_learning": []
+          },
+          "is_probing": false,
+          "current_probing_pillar": null
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "fc06945e-ca94-43cc-9d46-e57c423df750",
+      "timestamp": 1788663074.0911918
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Alright, let's start with the first question:\n\n\"I enjoy solving problems where the solution is not immediately obvious.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree). Once you provide your rating, I will present the next question."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 59,
+        "promptTokenCount": 2915,
+        "totalTokenCount": 2974
+      },
+      "invocationId": "e-5e20d5e8-972c-4a86-bb4f-9e5c87bfccbc",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "2307b960-4f06-47cc-a757-3149daa0f2b4",
+      "timestamp": 1788663074.1420553
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-2c853fee-2564-45ee-bd26-958a937a7e3c",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ed19a74c-e039-463f-acce-a75357b94c42",
+      "timestamp": 1788663078.7873504
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_hTraCp19zNyPitAIDFPKdg",
+              "args": {
+                "rating": 1
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 2980,
+        "totalTokenCount": 2999
+      },
+      "invocationId": "e-2c853fee-2564-45ee-bd26-958a937a7e3c",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "f2449fb9-7733-4543-b66b-c86abaf9ad1c",
+      "timestamp": 1788663078.947549
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_hTraCp19zNyPitAIDFPKdg",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "probing_question",
+                "text": "Do you enjoy breaking down complex logical puzzles or playing strategic board games?",
+                "pillar": "math_and_logic",
+                "instruction": "Since you rated the previous statement low, let's explore your strengths. Rate this from 1 (Strongly Disagree) to 5 (Strongly Agree):"
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-2c853fee-2564-45ee-bd26-958a937a7e3c",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "is_probing": true,
+          "current_probing_pillar": "math_and_logic"
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "9fe64ffa-2f97-4356-a830-ecd98409bc6a",
+      "timestamp": 1788663081.2700021
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Since you rated the previous statement low, let's explore your strengths:\n\n\"Do you enjoy breaking down complex logical puzzles or playing strategic board games?\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 52,
+        "promptTokenCount": 3103,
+        "totalTokenCount": 3155
+      },
+      "invocationId": "e-2c853fee-2564-45ee-bd26-958a937a7e3c",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "f3de18bc-40b6-4139-bcd9-478f837269e1",
+      "timestamp": 1788663081.2983725
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-a9399f29-be34-4d59-a852-fc0a3187a550",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ca291c32-aaf3-4261-b17d-23a68edfd657",
+      "timestamp": 1788663088.0197399
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_TG2a9aWsGotMoUev8NxbD0",
+              "args": {
+                "rating": 1
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 3161,
+        "totalTokenCount": 3180
+      },
+      "invocationId": "e-a9399f29-be34-4d59-a852-fc0a3187a550",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "ee0e2133-7b55-4427-aa00-85bad6f7b157",
+      "timestamp": 1788663088.0972261
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_TG2a9aWsGotMoUev8NxbD0",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I enjoy combining different technologies to build a complete system.",
+                "category": "programming",
+                "index": 2,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-a9399f29-be34-4d59-a852-fc0a3187a550",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "is_probing": false,
+          "current_probing_pillar": null,
+          "current_question_index": 1
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "a604941b-55a2-43a3-ae1b-a146b4c50ae8",
+      "timestamp": 1788663091.2925022
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Great, let's move on to the next question:\n\n\"I enjoy combining different technologies to build a complete system.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 46,
+        "promptTokenCount": 3274,
+        "totalTokenCount": 3320
+      },
+      "invocationId": "e-a9399f29-be34-4d59-a852-fc0a3187a550",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "34a85a8b-1512-4903-9a12-231ccdb3e4a9",
+      "timestamp": 1788663091.3451545
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-c86d3f27-5525-4f83-8e28-93f3ce1805bb",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "375820fd-9445-4c74-9c89-512aa6535c6e",
+      "timestamp": 1788663107.7663944
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_WdOKkDLUhyOJaSoHgDiW1J",
+              "args": {
+                "rating": 5
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 3326,
+        "totalTokenCount": 3345
+      },
+      "invocationId": "e-c86d3f27-5525-4f83-8e28-93f3ce1805bb",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "86cf8c2f-f682-4d29-ba27-378aa8935911",
+      "timestamp": 1788663107.8069987
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_WdOKkDLUhyOJaSoHgDiW1J",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I enjoy troubleshooting systems when something does not work as expected.",
+                "category": "debugging_patience",
+                "index": 3,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-c86d3f27-5525-4f83-8e28-93f3ce1805bb",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "current_question_index": 2
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "52e6e475-7405-4a7a-8499-f5e0925077d4",
+      "timestamp": 1788663109.0435102
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "\"I enjoy troubleshooting systems when something does not work as expected.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 35,
+        "promptTokenCount": 3444,
+        "totalTokenCount": 3479
+      },
+      "invocationId": "e-c86d3f27-5525-4f83-8e28-93f3ce1805bb",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "b622952f-6283-4181-b5bc-973d782da240",
+      "timestamp": 1788663109.1183593
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-40707db4-edab-4826-80cc-1a69530401be",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ee53259e-db25-4b17-beb7-631f36e7bb75",
+      "timestamp": 1788663111.7156432
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_ebINWoIldH3BfHyVeaHsfQ",
+              "args": {
+                "rating": 4
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 3485,
+        "totalTokenCount": 3504
+      },
+      "invocationId": "e-40707db4-edab-4826-80cc-1a69530401be",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "d3a93176-a040-478e-9494-02c10d1c3fdb",
+      "timestamp": 1788663111.7901878
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_ebINWoIldH3BfHyVeaHsfQ",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I enjoy experimenting with different approaches to find the best solution.",
+                "category": "debugging_patience",
+                "index": 4,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-40707db4-edab-4826-80cc-1a69530401be",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "current_question_index": 3
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "a38af55b-ab0e-406c-bddf-be5996626c7b",
+      "timestamp": 1788663112.9639242
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "\"I enjoy experimenting with different approaches to find the best solution.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 35,
+        "promptTokenCount": 3603,
+        "totalTokenCount": 3638
+      },
+      "invocationId": "e-40707db4-edab-4826-80cc-1a69530401be",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "f39d0a79-9475-4566-9e36-2beeeb990ecd",
+      "timestamp": 1788663112.997315
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-76b862ad-e75f-49d0-9fd8-af95ba4f7bdd",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "c20ec8d2-b694-4848-ab63-3fb4d97f2521",
+      "timestamp": 1788663117.6177409
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_JHheqaMRi9jrVrjbFmksX5",
+              "args": {
+                "rating": 5
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 3644,
+        "totalTokenCount": 3663
+      },
+      "invocationId": "e-76b862ad-e75f-49d0-9fd8-af95ba4f7bdd",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "aaa5d531-c26b-4ac3-b21a-d0e0dd4ff586",
+      "timestamp": 1788663117.6906989
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_JHheqaMRi9jrVrjbFmksX5",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I enjoy writing and debugging code to solve problems.",
+                "category": "programming",
+                "index": 5,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-76b862ad-e75f-49d0-9fd8-af95ba4f7bdd",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "current_question_index": 4
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "115126cb-bd05-4472-ad67-beac7c81266a",
+      "timestamp": 1788663118.5824556
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "\"I enjoy writing and debugging code to solve problems.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 33,
+        "promptTokenCount": 3756,
+        "totalTokenCount": 3789
+      },
+      "invocationId": "e-76b862ad-e75f-49d0-9fd8-af95ba4f7bdd",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "6848411e-7d4d-4dfe-86cb-ba05033cfab9",
+      "timestamp": 1788663118.6449523
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-86cb21b6-1953-45b5-84a0-42b51778151b",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "85f6df99-23dc-41a5-813f-dcc07b04d36d",
+      "timestamp": 1788663120.3418393
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_G4QgJ78yHgegxIbONkrUgH",
+              "args": {
+                "rating": 4
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 3795,
+        "totalTokenCount": 3814
+      },
+      "invocationId": "e-86cb21b6-1953-45b5-84a0-42b51778151b",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "8e7cbd88-fe04-4a7b-9325-f0093f62babc",
+      "timestamp": 1788663120.4116595
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_G4QgJ78yHgegxIbONkrUgH",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I am comfortable learning new programming languages, frameworks, and technologies continuously.",
+                "category": "continuous_learning",
+                "index": 6,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-86cb21b6-1953-45b5-84a0-42b51778151b",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "current_question_index": 5
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "49d631d0-0d11-4f4f-91d6-0ca161c70566",
+      "timestamp": 1788663121.2915401
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "\"I am comfortable learning new programming languages, frameworks, and technologies continuously.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 37,
+        "promptTokenCount": 3913,
+        "totalTokenCount": 3950
+      },
+      "invocationId": "e-86cb21b6-1953-45b5-84a0-42b51778151b",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "8e6cf5e4-8d5f-4ca0-87bd-7072e2b4ed9c",
+      "timestamp": 1788663121.3362432
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "3"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-adb9e40d-081b-4d94-aa58-8ca98a4b5163",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "fc5c42e9-1153-440a-8a3e-dca7b3100dfa",
+      "timestamp": 1788663124.2802522
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_LTnUewtXvl8FEhIVmYgc17",
+              "args": {
+                "rating": 3
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 3956,
+        "totalTokenCount": 3975
+      },
+      "invocationId": "e-adb9e40d-081b-4d94-aa58-8ca98a4b5163",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "88d98193-4ea8-4e65-8a0a-3ae9c3f2f3c9",
+      "timestamp": 1788663124.345224
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_LTnUewtXvl8FEhIVmYgc17",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I am comfortable with mathematics, algorithms, and analytical thinking.",
+                "category": "math_and_logic",
+                "index": 7,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-adb9e40d-081b-4d94-aa58-8ca98a4b5163",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "current_question_index": 6
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "603fced5-6121-4f91-b7a8-d67db8b8782d",
+      "timestamp": 1788663125.573845
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "\"I am comfortable with mathematics, algorithms, and analytical thinking.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 35,
+        "promptTokenCount": 4074,
+        "totalTokenCount": 4109
+      },
+      "invocationId": "e-adb9e40d-081b-4d94-aa58-8ca98a4b5163",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "e98d4f7a-6c20-4524-a2d5-de68f7cea847",
+      "timestamp": 1788663125.6235878
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "2"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-d7bee0e5-d85f-403f-843c-c0346be7c267",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "7958943b-431b-4404-8b83-bdfc2e9301ef",
+      "timestamp": 1788663127.4936302
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_g3HOyoJqQ96aXDPKqqVNfs",
+              "args": {
+                "rating": 2
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 4115,
+        "totalTokenCount": 4134
+      },
+      "invocationId": "e-d7bee0e5-d85f-403f-843c-c0346be7c267",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "6163e242-781f-4670-810c-2f09747e49fa",
+      "timestamp": 1788663127.5259228
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_g3HOyoJqQ96aXDPKqqVNfs",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "probing_question",
+                "text": "Do you enjoy breaking down complex logical puzzles or playing strategic board games?",
+                "pillar": "math_and_logic",
+                "instruction": "Since you rated the previous statement low, let's explore your strengths. Rate this from 1 (Strongly Disagree) to 5 (Strongly Agree):"
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-d7bee0e5-d85f-403f-843c-c0346be7c267",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "is_probing": true,
+          "current_probing_pillar": "math_and_logic"
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "57000ca0-0210-4547-ab7c-8a7378e6315e",
+      "timestamp": 1788663128.7313352
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Since you rated the previous statement low, let's explore your strengths:\n\n\"Do you enjoy breaking down complex logical puzzles or playing strategic board games?\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 52,
+        "promptTokenCount": 4238,
+        "totalTokenCount": 4290
+      },
+      "invocationId": "e-d7bee0e5-d85f-403f-843c-c0346be7c267",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "c629c4e2-33ac-409b-9081-222217f79d4e",
+      "timestamp": 1788663128.7771041
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-0f6998cb-b74b-4aa0-aac2-a242a58faa6f",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "c2226824-fa99-404c-a618-8cd55ffdf517",
+      "timestamp": 1788663131.4127336
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_5erMpw3Sum3InGz8Ejv73P",
+              "args": {
+                "rating": 4
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 4296,
+        "totalTokenCount": 4315
+      },
+      "invocationId": "e-0f6998cb-b74b-4aa0-aac2-a242a58faa6f",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "4775d79f-f8b8-4e2f-a6b0-e796e5934cf9",
+      "timestamp": 1788663131.452162
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_5erMpw3Sum3InGz8Ejv73P",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "next_question",
+                "text": "I enjoy keeping up with tech news and tinkering with new tools on weekends.",
+                "category": "continuous_learning",
+                "index": 8,
+                "total": 8,
+                "instruction": "Please rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-0f6998cb-b74b-4aa0-aac2-a242a58faa6f",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "is_probing": false,
+          "current_probing_pillar": null,
+          "current_question_index": 7
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "92b1ede9-9f48-4a74-9d71-9b7d5802067a",
+      "timestamp": 1788663132.2702885
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "\"I enjoy keeping up with tech news and tinkering with new tools on weekends.\"\n\nPlease rate this statement from 1 (Strongly Disagree) to 5 (Strongly Agree)."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 38,
+        "promptTokenCount": 4415,
+        "totalTokenCount": 4453
+      },
+      "invocationId": "e-0f6998cb-b74b-4aa0-aac2-a242a58faa6f",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "321cf88e-0365-4118-9bb0-2e879066c2ed",
+      "timestamp": 1788663132.3190446
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-a37af738-9069-4b9d-b0f8-368c055623ec",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ab3977e9-a87d-447f-bdca-13936e62c5cb",
+      "timestamp": 1788663134.7915475
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_LkUbkJJeWjJvIgXX3Ep8si",
+              "args": {
+                "rating": 5
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 4459,
+        "totalTokenCount": 4478
+      },
+      "invocationId": "e-a37af738-9069-4b9d-b0f8-368c055623ec",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "a35cb64b-0167-4230-bdf2-335a28da4b8d",
+      "timestamp": 1788663134.8904579
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_LkUbkJJeWjJvIgXX3Ep8si",
+              "name": "submit_single_rating",
+              "response": {
+                "status": "completed",
+                "message": "All statements have been rated successfully! Here are your compatibility results:",
+                "results": {
+                  "status": "success",
+                  "suitability_percentage": 55,
+                  "evaluation_band": "Low Current Alignment",
+                  "pillar_breakdowns": {
+                    "Math & Logic": 2,
+                    "Programming Intensity": 2,
+                    "Debugging Resilience": 2,
+                    "Continuous Learning": 5
+                  },
+                  "career_advice": "A highly technical AI engineering path might feel frustrating right now. Consider standard software engineering, UX design, or other tech domains first, or explore low-code AI integrations to test the waters."
+                }
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-a37af738-9069-4b9d-b0f8-368c055623ec",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {
+          "current_question_index": 8,
+          "compatibility_results": {
+            "status": "success",
+            "suitability_percentage": 55,
+            "evaluation_band": "Low Current Alignment",
+            "pillar_breakdowns": {
+              "Math & Logic": 2,
+              "Programming Intensity": 2,
+              "Debugging Resilience": 2,
+              "Continuous Learning": 5
+            },
+            "career_advice": "A highly technical AI engineering path might feel frustrating right now. Consider standard software engineering, UX design, or other tech domains first, or explore low-code AI integrations to test the waters."
+          }
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "b8f2d030-9e6b-4b19-ad65-d647b5918af5",
+      "timestamp": 1788663135.7047136
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for completing the questionnaire! Here are your compatibility results:\n\n**Suitability Percentage:** 55.0\n\n**Evaluation Band:** Low Current Alignment\n\n**Breakdown of Pillars:**\n- **Math & Logic:** 2.0\n- **Programming Intensity:** 2.0\n- **Debugging Resilience:** 2.0\n- **Continuous Learning:** 5.0\n\n**Career Advice:**\n\"A highly technical AI engineering path might feel frustrating right now. Consider standard software engineering, UX design, or other tech domains first, or explore low-code AI integrations to test the waters.\"\n\nIf you'd like to explore more options or have any questions, feel free to ask!"
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 148,
+        "promptTokenCount": 4650,
+        "totalTokenCount": 4798
+      },
+      "invocationId": "e-a37af738-9069-4b9d-b0f8-368c055623ec",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "372bc41f-bb5f-429d-a36a-cf48637b3f0a",
+      "timestamp": 1788663135.7481222
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-fe40e6ec-3aa4-4037-955f-0f119c89a2c1",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "6489f6e6-1074-4fd0-a85e-921bb525bdb5",
+      "timestamp": 1788663138.078446
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "id": "tooluse_zSvYSiSKa1SzLayhb3Y3qA",
+              "args": {
+                "rating": 5
+              },
+              "name": "submit_single_rating"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 19,
+        "promptTokenCount": 4804,
+        "totalTokenCount": 4823
+      },
+      "invocationId": "e-fe40e6ec-3aa4-4037-955f-0f119c89a2c1",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "ed7df4f6-6aac-42da-a292-0d44469dcac5",
+      "timestamp": 1788663138.70093
+    },
+    {
+      "errorCode": "IndexError",
+      "errorMessage": "list index out of range",
+      "invocationId": "e-fe40e6ec-3aa4-4037-955f-0f119c89a2c1",
+      "author": "ai_compatibility_test_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_compatibility_test_agent@1"
+      },
+      "id": "c89d8368-70c7-4cd9-bcc9-2eec57f804d3",
+      "timestamp": 1788663140.0442946
+    }
+  ],
+  "lastUpdateTime": 1788663140.0442946
+}

@@ -1,0 +1,1443 @@
+{
+  "id": "c5ac29db-9ec2-42df-93c1-c78b4a69a967",
+  "appName": "career_consult_agent",
+  "userId": "user",
+  "state": {
+    "career_fit_results": {
+      "status": "success",
+      "primary_recommendation": "Data Scientist",
+      "primary_match_pct": 80,
+      "secondary_recommendation": "AI Engineer",
+      "secondary_match_pct": 44,
+      "all_matches": {
+        "AI Engineer": "44.0%",
+        "Data Scientist": "80.0%",
+        "MLOps Engineer": "36.0%",
+        "NLP / LLM Specialist": "44.0%",
+        "Computer Vision Engineer": "36.0%",
+        "ML Research Scientist": "36.0%"
+      },
+      "salary_benchmark": "Junior: SGD 5,500 - SGD 7,800/month | Senior: SGD 8,500 - SGD 14,000/month",
+      "milestone_risk": "The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.",
+      "career_advice": "Your top match is Data Scientist (80.0% match)! In Singapore, junior starting salaries in this path average Junior: SGD 5,500 - SGD 7,800/month | Senior: SGD 8,500 - SGD 14,000/month. Be aware of your typical mid-career roadblock: 'The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.' Your secondary career fit is AI Engineer at 44.0% match. We recommend following the: 'Focus on SQL mastery, business intelligence storytelling, experimental design, and communication.'"
+    },
+    "recorded_profile": {},
+    "__session_metadata__": {
+      "displayName": "hi"
+    }
+  },
+  "events": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "hi"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-ace536a6-332d-4ff8-9ac4-5a7ebd55b1d2",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "015cd87e-4f71-4b98-b193-9d7e8d4caffa",
+      "timestamp": 1788631786.8654294
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "The user has greeted me. I should welcome them and present the two clear choices to begin: either describe their background/interests in natural language or take a structured questionnaire.",
+            "thought": true
+          },
+          {
+            "text": "\nHi there! I'm here to help you find the perfect AI career path for you. Let's start by choosing how you want to proceed:\n\n**Option A:** Type a natural language prompt explaining your background and interests.\n**Option B:** Take a structured questionnaire rating statements on a scale of 1 to 5.\n\nWhich option would you like to choose?"
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 115,
+        "promptTokenCount": 3818,
+        "thoughtsTokenCount": 35,
+        "totalTokenCount": 3933
+      },
+      "invocationId": "e-ace536a6-332d-4ff8-9ac4-5a7ebd55b1d2",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "f9b1d490-2a36-49e0-b623-fc7067a38b5c",
+      "timestamp": 1788631790.323354
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "option B"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-6a3178b7-35fe-40eb-9252-60cbad721310",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "348a9ab8-7be7-4289-9e04-866c9ce92750",
+      "timestamp": 1788631801.3039668
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "The user has chosen Option B, which means we will start with a structured questionnaire to gather information about their interests and preferences. I will first call the `career_path_questionnaire` tool to fetch the randomized list of statements.",
+            "thought": true
+          },
+          {
+            "text": "\n"
+          },
+          {
+            "functionCall": {
+              "id": "tooluse_wutqE7GigtR8fEupP3o41R",
+              "args": {},
+              "name": "career_path_questionnaire"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 68,
+        "promptTokenCount": 3899,
+        "thoughtsTokenCount": 45,
+        "totalTokenCount": 3967
+      },
+      "invocationId": "e-6a3178b7-35fe-40eb-9252-60cbad721310",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "1e455bc7-0c20-4ae3-a273-86deafcd452b",
+      "timestamp": 1788631801.327018
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_wutqE7GigtR8fEupP3o41R",
+              "name": "career_path_questionnaire",
+              "response": {
+                "instruction": "Please rate these statements from 1 (Strongly Disagree) to 5 (Strongly Agree). Do NOT show the category names to the user.",
+                "questions": [
+                  {
+                    "text": "I am highly comfortable with college-level advanced mathematics (linear algebra, calculus, and statistics).",
+                    "category": "ml_research_scientist"
+                  },
+                  {
+                    "text": "I have a 'builder's mindset' and prefer writing code to make a working app rather than researching theoretical algorithms.",
+                    "category": "ai_engineer"
+                  },
+                  {
+                    "text": "I am highly detail-oriented and prefer organizing clean folder structures, tracking system performance, and ensuring software runs reliably.",
+                    "category": "mlops_engineer"
+                  },
+                  {
+                    "text": "I aspire to develop smart vision systems that can teach computers to see, recognize objects, or pilot physical hardware like drones and robots.",
+                    "category": "computer_vision_engineer"
+                  },
+                  {
+                    "text": "I am a visual thinker who excels at spatial coordination, geometry, and tracking 2D/3D objects.",
+                    "category": "computer_vision_engineer"
+                  },
+                  {
+                    "text": "I enjoy system administration tasks—working in the Linux command line (bash), configuring Docker containers, or automating manual files/scripts.",
+                    "category": "mlops_engineer"
+                  },
+                  {
+                    "text": "I enjoy working with SQL databases, writing queries, and summarizing large datasets into visual charts or spreadsheets.",
+                    "category": "data_scientist"
+                  },
+                  {
+                    "text": "I aspire to contribute to the scientific community by inventing novel algorithms and mathematical models rather than using existing tools.",
+                    "category": "ml_research_scientist"
+                  },
+                  {
+                    "text": "I enjoy basic software development—writing clean functions, building working prototypes, and integrating databases or APIs.",
+                    "category": "ai_engineer"
+                  },
+                  {
+                    "text": "I aspire to build conversational AI agents that can read, understand context, write summaries, and chat naturally with humans.",
+                    "category": "nlp_llm_engineer"
+                  },
+                  {
+                    "text": "I enjoy text-processing tasks, such as reading text files, parsing strings, searching for keywords, or studying linguistics and grammar.",
+                    "category": "nlp_llm_engineer"
+                  },
+                  {
+                    "text": "I enjoy working with visual assets—manipulating pixel arrays, working with image/video files, or writing graphics programs.",
+                    "category": "computer_vision_engineer"
+                  },
+                  {
+                    "text": "I aspire to build smart, user-facing applications (like automated assistants, tools, or chatbots) that help people solve everyday problems.",
+                    "category": "ai_engineer"
+                  },
+                  {
+                    "text": "I aspire to influence strategic decisions by helping leaders understand the story behind the data rather than just writing backend code.",
+                    "category": "data_scientist"
+                  },
+                  {
+                    "text": "I enjoy abstract thinking, solving complex logic puzzles, and reading academic papers to understand how things work at their deepest level.",
+                    "category": "ml_research_scientist"
+                  },
+                  {
+                    "text": "I prefer working with communication, languages, translation, and structured text documents over heavy image datasets or numeric grids.",
+                    "category": "nlp_llm_engineer"
+                  },
+                  {
+                    "text": "Are Singapore monthly starting salary benchmarks (SGD 6,000 - SGD 10,000+) aligned with your career goals?",
+                    "category": "salary_preference"
+                  },
+                  {
+                    "text": "I aspire to design robust backend pipelines and automate software deployments so that systems can scale seamlessly to handle thousands of users.",
+                    "category": "mlops_engineer"
+                  },
+                  {
+                    "text": "I am an analytical thinker who enjoys finding hidden patterns in numbers and using statistics to solve real-world problems.",
+                    "category": "data_scientist"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-6a3178b7-35fe-40eb-9252-60cbad721310",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {
+          "recorded_profile": {}
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "04402bf3-f47f-4e9d-ae42-7af160878f13",
+      "timestamp": 1788631802.3708096
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Great, let's get started with the questionnaire. Please rate the following statement from 1 (Strongly Disagree) to 5 (Strongly Agree):\n\n**Statement 1:** \"I am highly comfortable with college-level advanced mathematics (linear algebra, calculus, and statistics).\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 65,
+        "promptTokenCount": 4685,
+        "totalTokenCount": 4750
+      },
+      "invocationId": "e-6a3178b7-35fe-40eb-9252-60cbad721310",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "54bf0938-a761-404b-a2a9-d0e5ae3f06dc",
+      "timestamp": 1788631802.3885863
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-bfee3733-8aad-47a9-912d-5790db38fba0",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "524f7583-d596-4c2f-9dcf-2cabac43cd7d",
+      "timestamp": 1788631850.524114
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Next, please rate the following statement:\n\n**Statement 2:** \"I have a 'builder's mindset' and prefer writing code to make a working app rather than researching theoretical algorithms.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 4756,
+        "totalTokenCount": 4806
+      },
+      "invocationId": "e-bfee3733-8aad-47a9-912d-5790db38fba0",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "da4849a7-cca1-44cf-ab6e-654d616b5ece",
+      "timestamp": 1788631850.5559428
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-1242e2e4-b2f2-4c11-8a62-485ab85cd7b6",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "145bfbb2-d6be-44e7-8d2c-c58fc8c35309",
+      "timestamp": 1788631852.217686
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's move on to the next statement:\n\n**Statement 3:** \"I am highly detail-oriented and prefer organizing clean folder structures, tracking system performance, and ensuring software runs reliably.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 51,
+        "promptTokenCount": 4812,
+        "totalTokenCount": 4863
+      },
+      "invocationId": "e-1242e2e4-b2f2-4c11-8a62-485ab85cd7b6",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "06ae1acf-fe40-4b23-b666-c35c6331d7d3",
+      "timestamp": 1788631852.242629
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-9b7ad945-5b70-44b0-9b6d-5c0dd54736ec",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "4eaecd64-cd06-4c67-bdd7-968d4aef030f",
+      "timestamp": 1788631853.8385344
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 4:** \"I aspire to develop smart vision systems that can teach computers to see, recognize objects, or pilot physical hardware like drones and robots.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 50,
+        "promptTokenCount": 4869,
+        "totalTokenCount": 4919
+      },
+      "invocationId": "e-9b7ad945-5b70-44b0-9b6d-5c0dd54736ec",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "e8fa8e78-e9f6-4138-aaac-32df196fd286",
+      "timestamp": 1788631853.8607185
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-604901aa-1493-4149-8d8c-6dad52ac9fc1",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "4f071cec-80af-412d-9920-61a9421ad589",
+      "timestamp": 1788631855.6597724
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 5:** \"I am a visual thinker who excels at spatial coordination, geometry, and tracking 2D/3D objects.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 47,
+        "promptTokenCount": 4925,
+        "totalTokenCount": 4972
+      },
+      "invocationId": "e-604901aa-1493-4149-8d8c-6dad52ac9fc1",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "4ece8f74-d319-42aa-932d-25be5e18bf9f",
+      "timestamp": 1788631855.6923115
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-1d66df9d-c280-4764-b340-fbbe58a8f3a9",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "25830990-1f30-4693-b229-ad1dd47f3f6a",
+      "timestamp": 1788631857.143081
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's continue with the next statement:\n\n**Statement 6:** \"I enjoy system administration tasks—working in the Linux command line (bash), configuring Docker containers, or automating manual files/scripts.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 53,
+        "promptTokenCount": 4978,
+        "totalTokenCount": 5031
+      },
+      "invocationId": "e-1d66df9d-c280-4764-b340-fbbe58a8f3a9",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "bd351b42-e194-4b75-bb38-3317bf47746c",
+      "timestamp": 1788631857.1758292
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "1"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-824effb5-4a04-44c6-a17f-8f4c3207f740",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "f0597724-80c1-4543-a13f-35db9652c983",
+      "timestamp": 1788631859.7023313
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 7:** \"I enjoy working with SQL databases, writing queries, and summarizing large datasets into visual charts or spreadsheets.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 44,
+        "promptTokenCount": 5037,
+        "totalTokenCount": 5081
+      },
+      "invocationId": "e-824effb5-4a04-44c6-a17f-8f4c3207f740",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "c9281ac9-579f-42c7-9a8c-f944fcfd5a74",
+      "timestamp": 1788631859.7270582
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-736889f9-c333-4c41-84b9-1e02301bbf10",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "e3b2741e-81b0-4390-9487-4a6016f3bf0e",
+      "timestamp": 1788631861.9542336
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 8:** \"I aspire to contribute to the scientific community by inventing novel algorithms and mathematical models rather than using existing tools.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 45,
+        "promptTokenCount": 5087,
+        "totalTokenCount": 5132
+      },
+      "invocationId": "e-736889f9-c333-4c41-84b9-1e02301bbf10",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "5597f745-a552-453f-b59c-5437a2fb4890",
+      "timestamp": 1788631861.9819033
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-b186693e-f68f-47c7-afa5-427d3ba0c5b6",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "0760645b-168d-458a-8987-0841c04fe91f",
+      "timestamp": 1788631863.3739674
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's continue with the next statement:\n\n**Statement 9:** \"I enjoy basic software development—writing clean functions, building working prototypes, and integrating databases or APIs.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 47,
+        "promptTokenCount": 5138,
+        "totalTokenCount": 5185
+      },
+      "invocationId": "e-b186693e-f68f-47c7-afa5-427d3ba0c5b6",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "9ddc4ad8-694c-4542-9cf9-16d13d626b17",
+      "timestamp": 1788631863.3979177
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-96498d93-f2de-4c8f-bbe4-8aac090f2511",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "e0a441ee-040e-4478-9a53-a9909dce2ec7",
+      "timestamp": 1788631864.74464
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 10:** \"I aspire to build conversational AI agents that can read, understand context, write summaries, and chat naturally with humans.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 48,
+        "promptTokenCount": 5191,
+        "totalTokenCount": 5239
+      },
+      "invocationId": "e-96498d93-f2de-4c8f-bbe4-8aac090f2511",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "f693871f-7b4a-4fd6-b1b9-997a00d2156a",
+      "timestamp": 1788631864.7700858
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "3"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-5445129a-9373-4bd3-acf9-290daec213e0",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "02bc2e39-96d7-4ab7-824a-e5f129a7ae68",
+      "timestamp": 1788631868.0295296
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's move on to the next statement:\n\n**Statement 11:** \"I enjoy text-processing tasks, such as reading text files, parsing strings, searching for keywords, or studying linguistics and grammar.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 55,
+        "promptTokenCount": 5245,
+        "totalTokenCount": 5300
+      },
+      "invocationId": "e-5445129a-9373-4bd3-acf9-290daec213e0",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "35891ba5-49ef-47c6-9fd2-7abee81f99f9",
+      "timestamp": 1788631868.0493252
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "2"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-34d6e947-5ba6-43e5-839b-944841e62a4e",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ef5ab83f-5eb2-4262-8653-3a26e65835c9",
+      "timestamp": 1788631869.427108
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 12:** \"I enjoy working with visual assets—manipulating pixel arrays, working with image/video files, or writing graphics programs.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 49,
+        "promptTokenCount": 5306,
+        "totalTokenCount": 5355
+      },
+      "invocationId": "e-34d6e947-5ba6-43e5-839b-944841e62a4e",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "e959f875-51fe-412c-8dd0-a4f434d3afe1",
+      "timestamp": 1788631869.4518354
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-b2b0baea-780f-40eb-91f9-53e8ee01f325",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "b3394604-54a7-488a-a6a7-d695b1fff735",
+      "timestamp": 1788631870.8986478
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's continue with the next statement:\n\n**Statement 13:** \"I aspire to build smart, user-facing applications (like automated assistants, tools, or chatbots) that help people solve everyday problems.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 56,
+        "promptTokenCount": 5361,
+        "totalTokenCount": 5417
+      },
+      "invocationId": "e-b2b0baea-780f-40eb-91f9-53e8ee01f325",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "99ae995d-0cf1-4b6d-b24b-f4c93da85dae",
+      "timestamp": 1788631870.9276373
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-80dfbbeb-093e-483c-8a96-aeaf33b9fc81",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "8ea9c1e9-170f-41a5-aeec-16ec08917d8e",
+      "timestamp": 1788631872.4275913
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 14:** \"I aspire to influence strategic decisions by helping leaders understand the story behind the data rather than just writing backend code.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 47,
+        "promptTokenCount": 5423,
+        "totalTokenCount": 5470
+      },
+      "invocationId": "e-80dfbbeb-093e-483c-8a96-aeaf33b9fc81",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "0e412dea-12b1-42bd-9c81-99dbadc1889a",
+      "timestamp": 1788631872.4535253
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "3"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-fc217ab9-9e31-4c8e-bdc0-f3265eef57ad",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "f639ef15-7cfa-43d9-a134-b926e349525c",
+      "timestamp": 1788631873.9488244
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's move on to the next statement:\n\n**Statement 15:** \"I enjoy abstract thinking, solving complex logic puzzles, and reading academic papers to understand how things work at their deepest level.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 53,
+        "promptTokenCount": 5476,
+        "totalTokenCount": 5529
+      },
+      "invocationId": "e-fc217ab9-9e31-4c8e-bdc0-f3265eef57ad",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "d3c51b3b-9653-487c-835d-880b53ae7df2",
+      "timestamp": 1788631873.9750779
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-48f52ca4-2a40-4007-808d-c001c1f9a0a9",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ea5de414-5df5-4559-96a3-5336e788928f",
+      "timestamp": 1788631875.6087503
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 16:** \"I prefer working with communication, languages, translation, and structured text documents over heavy image datasets or numeric grids.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 47,
+        "promptTokenCount": 5535,
+        "totalTokenCount": 5582
+      },
+      "invocationId": "e-48f52ca4-2a40-4007-808d-c001c1f9a0a9",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "aa4e9378-b650-4b0e-9183-9ded4fcd102c",
+      "timestamp": 1788631875.6411226
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "4"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-c962542b-790d-41da-97ac-3f3afb4005ab",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "ef4709dd-56cc-4710-b799-962fab361a33",
+      "timestamp": 1788631877.0707955
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Let's continue with the next statement:\n\n**Statement 17:** \"I aspire to design robust backend pipelines and automate software deployments so that systems can scale seamlessly to handle thousands of users.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 51,
+        "promptTokenCount": 5588,
+        "totalTokenCount": 5639
+      },
+      "invocationId": "e-c962542b-790d-41da-97ac-3f3afb4005ab",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "367b97ca-d1e5-480d-919b-aa59a01d006d",
+      "timestamp": 1788631877.101558
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "3"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-a6a7bf7b-8c4e-4293-a169-9687fbe279e8",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "79a53e5a-9b3d-4a5a-ac60-9742d84454aa",
+      "timestamp": 1788631878.5741906
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Here is the next statement:\n\n**Statement 18:** \"I am an analytical thinker who enjoys finding hidden patterns in numbers and using statistics to solve real-world problems.\"\n\nPlease provide your rating."
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 47,
+        "promptTokenCount": 5645,
+        "totalTokenCount": 5692
+      },
+      "invocationId": "e-a6a7bf7b-8c4e-4293-a169-9687fbe279e8",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "318a584e-4764-401b-87e2-df81b8b21e54",
+      "timestamp": 1788631878.595811
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "5"
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-0139104d-2ebd-4282-9731-bb1103286a67",
+      "author": "user",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": ""
+      },
+      "id": "fd4cdf67-cf21-416c-a501-bd07361bd5dd",
+      "timestamp": 1788631879.9302652
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Thank you for your rating. Lastly, let's address your salary preferences:\n\n**Statement 19:** \"Are Singapore monthly starting salary benchmarks (SGD 6,000 - SGD 10,000+) aligned with your career goals?\"\n\nPlease provide your rating.\n\n"
+          },
+          {
+            "functionCall": {
+              "id": "tooluse_znFz56OK1AIhUpYkwfmHUQ",
+              "args": {
+                "scores": {
+                  "ml_research_scientist": [
+                    1,
+                    1,
+                    1,
+                    1,
+                    5
+                  ],
+                  "ai_engineer": [
+                    1,
+                    1,
+                    4,
+                    4,
+                    1
+                  ],
+                  "mlops_engineer": [
+                    1,
+                    1,
+                    1,
+                    3,
+                    3
+                  ],
+                  "nlp_llm_engineer": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    1
+                  ],
+                  "computer_vision_engineer": [
+                    1,
+                    5,
+                    1,
+                    1,
+                    1
+                  ],
+                  "data_scientist": [
+                    4,
+                    3,
+                    5
+                  ],
+                  "continuous_learning_for_mlops_engineer": [],
+                  "continuous_learning_for_data_scientist": [],
+                  "continuous_learning_for_computer_vision_engineer": [],
+                  "continuous_learning_for_ml_research_scientist": [],
+                  "continuous_learning_for_ai_engineer": [],
+                  "continuous_learning_for_nlp_llm_engineer": []
+                }
+              },
+              "name": "record_score_from_student"
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 996,
+        "promptTokenCount": 5698,
+        "totalTokenCount": 6694
+      },
+      "invocationId": "e-0139104d-2ebd-4282-9731-bb1103286a67",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "longRunningToolIds": [],
+      "id": "d71b5082-fb5f-4d28-81e8-849baafbc8d3",
+      "timestamp": 1788631879.9567122
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "functionResponse": {
+              "id": "tooluse_znFz56OK1AIhUpYkwfmHUQ",
+              "name": "record_score_from_student",
+              "response": {
+                "status": "success",
+                "primary_recommendation": "Data Scientist",
+                "primary_match_pct": 80,
+                "secondary_recommendation": "AI Engineer",
+                "secondary_match_pct": 44,
+                "all_matches": {
+                  "AI Engineer": "44.0%",
+                  "Data Scientist": "80.0%",
+                  "MLOps Engineer": "36.0%",
+                  "NLP / LLM Specialist": "44.0%",
+                  "Computer Vision Engineer": "36.0%",
+                  "ML Research Scientist": "36.0%"
+                },
+                "salary_benchmark": "Junior: SGD 5,500 - SGD 7,800/month | Senior: SGD 8,500 - SGD 14,000/month",
+                "milestone_risk": "The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.",
+                "career_advice": "Your top match is Data Scientist (80.0% match)! In Singapore, junior starting salaries in this path average Junior: SGD 5,500 - SGD 7,800/month | Senior: SGD 8,500 - SGD 14,000/month. Be aware of your typical mid-career roadblock: 'The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.' Your secondary career fit is AI Engineer at 44.0% match. We recommend following the: 'Focus on SQL mastery, business intelligence storytelling, experimental design, and communication.'"
+              }
+            }
+          }
+        ],
+        "role": "user"
+      },
+      "invocationId": "e-0139104d-2ebd-4282-9731-bb1103286a67",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {
+          "career_fit_results": {
+            "status": "success",
+            "primary_recommendation": "Data Scientist",
+            "primary_match_pct": 80,
+            "secondary_recommendation": "AI Engineer",
+            "secondary_match_pct": 44,
+            "all_matches": {
+              "AI Engineer": "44.0%",
+              "Data Scientist": "80.0%",
+              "MLOps Engineer": "36.0%",
+              "NLP / LLM Specialist": "44.0%",
+              "Computer Vision Engineer": "36.0%",
+              "ML Research Scientist": "36.0%"
+            },
+            "salary_benchmark": "Junior: SGD 5,500 - SGD 7,800/month | Senior: SGD 8,500 - SGD 14,000/month",
+            "milestone_risk": "The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.",
+            "career_advice": "Your top match is Data Scientist (80.0% match)! In Singapore, junior starting salaries in this path average Junior: SGD 5,500 - SGD 7,800/month | Senior: SGD 8,500 - SGD 14,000/month. Be aware of your typical mid-career roadblock: 'The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.' Your secondary career fit is AI Engineer at 44.0% match. We recommend following the: 'Focus on SQL mastery, business intelligence storytelling, experimental design, and communication.'"
+          }
+        },
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "fea5ed6c-bb08-4bdd-8a0c-2d2b1e9484ad",
+      "timestamp": 1788631887.1807196
+    },
+    {
+      "modelVersion": "amazon.nova-lite-v1:0",
+      "content": {
+        "parts": [
+          {
+            "text": "Based on your responses, your top career match is **Data Scientist** with an 80.0% match. This role aligns well with your interest in working with SQL databases, writing queries, and summarizing large datasets into visual charts or spreadsheets.\n\nIn Singapore, junior starting salaries in this path average **SGD 5,500 - SGD 7,800 per month**, with senior positions earning between **SGD 8,500 - SGD 14,000 per month**.\n\nHowever, be aware of your typical mid-career roadblock: \"The Business Translation ceiling: Delivering statistically perfect notebooks that business leadership fails to act on.\" This means you should focus on enhancing your ability to communicate your findings effectively to business leaders.\n\nYour secondary career fit is **AI Engineer** at 44.0% match. This role aligns well with your enjoyment of basic software development, writing clean functions, building working prototypes, and integrating databases or APIs.\n\nWe recommend that you **focus on SQL mastery, business intelligence storytelling, experimental design, and communication** to navigate your career successfully.\n\nIf you have any questions or need further guidance, feel free to ask!"
+          }
+        ],
+        "role": "model"
+      },
+      "partial": false,
+      "finishReason": "STOP",
+      "usageMetadata": {
+        "cachedContentTokenCount": 0,
+        "candidatesTokenCount": 240,
+        "promptTokenCount": 6353,
+        "totalTokenCount": 6593
+      },
+      "invocationId": "e-0139104d-2ebd-4282-9731-bb1103286a67",
+      "author": "ai_consult_agent",
+      "actions": {
+        "stateDelta": {},
+        "artifactDelta": {},
+        "requestedAuthConfigs": {},
+        "requestedToolConfirmations": {}
+      },
+      "nodeInfo": {
+        "path": "ai_consult_agent@1"
+      },
+      "id": "6b7f943e-bd03-412b-945b-5a099c2dcbf7",
+      "timestamp": 1788631887.2134142
+    }
+  ],
+  "lastUpdateTime": 1788631887.2134142
+}
