@@ -1,0 +1,4 @@
+// 1. Each raw json file record the unit test for each sub-agent 
+// 2. For better readibility, press Ctrl + F (Windows) search function to find the keyword 'text'. Most 'text' attribute record the conversation
+//    between user and the agent
+// 3. Also keep an eyes on the session state recorded
