@@ -1,1 +1,2 @@
 Unit_test 1 : Test Option A using prompt "I am currently a first-year CS student. I really love writing Python code and building working prototypes, but I absolutely hate calculus, algebra, and statistics."
+Unit_test 2 : Test Option B. Also, purposely give low marks for some question, making the system to prepare more questions for that particular scope to explore the possibilities of the student in this scope he may found strange
