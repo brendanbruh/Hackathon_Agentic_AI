@@ -1,0 +1,12 @@
+Unit_test : Test roadmap_agent using the following prompt-
+1. I want to learn MLOps. I have a bit of experience with Python but I am a complete beginner.
+2. can i explain the details about programming & system foundations and why are they useful
+3. now i also want to prioritize on machine learning too
+4. thanks can you give me useful website for learning machine learning
+5. can you offer some useful physical books for learning linear& logistic regression
+6. thanks I have just finished learning python OOP basics and docker containerization
+7. i have also finished learning fastapi,sql database, and vector databases
+8. can you explain in detailed what does multi-class classification models for machine learning
+
+Result: The agent is able to update roadmap by first-hand preference text, explain details about specific topic or scope, arrange priority according to user preference,
+        utilize web_search_tool to find up-to-date sources, update student learning progression as fast as possible, mark a scope as completed and assigned the finished scope as low priority
