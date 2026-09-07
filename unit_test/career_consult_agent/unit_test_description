@@ -1,1 +1,5 @@
 Unit_test_1 : Test Option A using prompt "I am currently a CS student. I really love building hands-on backends, coding working prototypes, and creating conversational interfaces or chatbots in Python. However, I absolutely hate abstract mathematical proofs, calculus, and linear algebra. Also, making high compensation is a massive priority for me—I want to aim for a career path that can eventually clear SGD 12,000+ per month in Singapore."
+Unit_test_2 : Test Option A using prompt "I'm currently a first-year CS student. I'm a complete beginner, but I have a bit of experience writing simple Python scripts and I am highly comfortable with college-level calculus and algebra. I'm willing to learn but I don't know much about AI."
+
+Unit_test_1 test "like" and "dislike" status for particular scope
+Unit_test_2 test "beginner", "familiar" status for particular scope to test the "continuous_learning" scope
