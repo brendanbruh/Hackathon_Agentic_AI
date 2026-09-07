@@ -7,6 +7,8 @@
   >Environment variable storing AWS_PROFILE
 - intention_enum.py:
   > An Enum class recording three types of student intention using our application
+- unit_test:
+  > Record all the unit test for sub-agents using raw json
 - manager_agent:
   > Folder containing our agentic AI code for our AI career consultant
   > >Inside folder:
